@@ -212,7 +212,7 @@ static const VSFrameRef *VS_CC adaptivemedianGetFrame
 					
 					int mingrid = 3;
 
-					if(((opt >> plane) && 1) == 1  )
+					if(((opt >> plane) & 1) == 1  )
 					{
 						AdMed ( srcp, dstp, pitch, bwd, bht, mingrid, d->maxgrid);						
 					}
@@ -228,7 +228,7 @@ static const VSFrameRef *VS_CC adaptivemedianGetFrame
 					
 					int mingrid = 3;
 
-					if(((opt >> plane) && 1) == 1  )
+					if(((opt >> plane) & 1) == 1  )
 					{
 						AdMed ( sp, dp, pitch,  bwd, bht,  mingrid, d->maxgrid);
 					}
@@ -246,7 +246,7 @@ static const VSFrameRef *VS_CC adaptivemedianGetFrame
 							
 				int mingrid = 3;
 
-				if(((opt >> plane) && 1) == 1  )
+				if(((opt >> plane) & 1) == 1  )
 				{
 					AdMed ( sp, dp, pitch,  bwd, bht,  mingrid, d->maxgrid);					
 				}	

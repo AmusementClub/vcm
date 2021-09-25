@@ -83,7 +83,7 @@ void f1qCleanProcessFull(F1QClean* d, const finc * sp, finc *dp, const int pitch
 void getAmpSqValues(float *ampSquareBuf, fftwf_complex * outBuf, int freqWidth);
 
 void cleanOutBuf(fftwf_complex* outBuf, float* ampSquareBuf, 
-				float *sortBuf, int span,int from,int upto, int freqWidth);
+				float **sortBuf, int span,int from,int upto, int freqWidth);
 void limitMaxAmplitudeInSpan(fftwf_complex* outBuf, int frequency, int span, int limit);
 
 void scaleValues(fftwf_complex* outBuf, int freqWidth, float scale);

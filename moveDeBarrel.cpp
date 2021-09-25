@@ -768,7 +768,7 @@ static void VS_CC debarrelCreate(const VSMap *in, VSMap *out, void *userData, VS
 			d.pixelsPerDot = 12;
 		else
 		{
-			vsapi->setError(out, "deBarrel: dots can be \"many\" or \*mod\" or \"few\" only.");
+			vsapi->setError(out, "deBarrel: dots can be \"many\" or \"mod\" or \"few\" only.");
 			vsapi->freeNode(d.node);
 			return;
 		}

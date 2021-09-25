@@ -31,9 +31,9 @@ void colorToBGR(int color, unsigned char * bgr)
 void BGRtoYUV(const unsigned char * bgr, unsigned char * yuv)
 {
 	// convert bgr values  to Y u v
-	yuv[0] = unsigned char(0.299 * bgr[2] + 0.587 * bgr[1] + 0.114 * bgr[0]);
-	yuv[1] = unsigned char (- 0.169 * bgr[2] - 0.332 * bgr[1] + 0.5 * bgr[0] + 128);
-	yuv[2] = unsigned char(0.5 * bgr[2] - bgr[1] * 0.419 - bgr[0] * 0.0813 + 128);
+	yuv[0] = (unsigned char)(0.299 * bgr[2] + 0.587 * bgr[1] + 0.114 * bgr[0]);
+	yuv[1] = (unsigned char)(- 0.169 * bgr[2] - 0.332 * bgr[1] + 0.5 * bgr[0] + 128);
+	yuv[2] = (unsigned char)(0.5 * bgr[2] - bgr[1] * 0.419 - bgr[0] * 0.0813 + 128);
 }
 //------------------------------------------------------------------------------
 
