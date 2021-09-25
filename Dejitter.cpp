@@ -33,7 +33,7 @@ Author : V.C.Mohan
 #include <stdlib.h>
 #include "windows.h"
 #include <stdint.h>
-#include "vapoursynth.h"
+#include "VapourSynth.h"
 #include "VsHeper.h"
 #include "colorconverter.h"
 */

@@ -30,7 +30,7 @@ HistogramAdjust filter plugin for vapoursynth by V.C.Mohan
 *************************************************************************************************/ 
 /*
 #include <stdlib.h>
-#include "vapoursynth.h"
+#include "VapourSynth.h"
 #include "VSHelper.h"
 #include "HistogramAdjustHelper.cpp"
 */

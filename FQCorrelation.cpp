@@ -28,8 +28,8 @@ For details of how to contact author see <http://www.avisynth.nl/users/vcmohan/v
 /*
 #include "windows.h"
 #include <stdlib.h>
-#include "vapoursynth.h"
-#include "vshelper.h"
+#include "VapourSynth.h"
+#include "VSHelper.h"
 #include <complex>
 #include  <math.h>
 //#include "fftw3.h"	// fftwlite used instead as I can understand it
