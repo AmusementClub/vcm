@@ -1,0 +1,37 @@
+name: Build
+on:
+  - push
+  - release
+  - pull_request
+  - workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch:
+          - amd64
+          - x86
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup MS dev commands
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+      - name: install meson and ninja
+        run: pip install meson ninja
+      - name: Meson setup
+        run: meson setup builddir/ -Db_vscrt=mt
+      - name: Meson compile
+        run: meson compile -C builddir/ -v
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-${{matrix.arch}}
+          path: |
+            builddir/*.dll
