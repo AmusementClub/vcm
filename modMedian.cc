@@ -183,7 +183,7 @@ static const VSFrameRef *VS_CC adaptivemedianGetFrame
         const VSFormat *fi = d->vi->format;
         int height = vsapi->getFrameHeight(src, 0);
         int width = vsapi->getFrameWidth(src, 0);
-		char opt = fi ->colorFamily == cmRGB? 0x111 :  (((d->vv << 1) |  d->uu) << 1) | d->yy; 
+		char opt = fi ->colorFamily == cmRGB? 0x7 :  (((d->vv << 1) |  d->uu) << 1) | d->yy;
 		
         // When creating a new frame for output it is VERY EXTREMELY SUPER IMPORTANT to
         // supply the "dominant" source frame to copy properties from. Frame props
