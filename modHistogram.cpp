@@ -71,7 +71,7 @@ static void VS_CC histogramadjustInit(VSMap *in, VSMap *out, void **instanceData
 	if (d->type == 2)	// matching with given frame of a clip
 	{		
 					// so get the frame of that clip		
-		const VSFrameRef *matchf = vsapi->getFrame(d->mf, d->node[1], NULL, NULL);
+		const VSFrameRef *matchf = vsapi->getFrame(d->mf, d->node[1], NULL, 0);
 			
         // The reason we query this on a per frame basis is because we want our filter
         // to accept clips with varying dimensions. If we reject such content using d->vi

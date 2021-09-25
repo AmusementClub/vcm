@@ -71,8 +71,8 @@ VSNode *node, VSCore *core, const VSAPI *vsapi)
 		float yetaplus = 1.2f;
 		float yetaminus = 0.5f;
 
-		const VSFrameRef *src = vsapi->getFrame(0, d->node, NULL, NULL);
-		const VSFrameRef *trf = vsapi->getFrame(0, d->tnode, NULL, NULL);
+		const VSFrameRef *src = vsapi->getFrame(0, d->node, NULL, 0);
+		const VSFrameRef *trf = vsapi->getFrame(0, d->tnode, NULL, 0);
 
 		const VSFormat *fi = d->vi->format;
 		int plane = fi->colorFamily == cmRGB ? 2 - d->rgb : 0;
