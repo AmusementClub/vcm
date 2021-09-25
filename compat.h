@@ -1,4 +1,5 @@
 // Unix compatibility layer.
+#ifndef _WIN32
 #include <dlfcn.h>
 #include <stdio.h>
 #include <string.h>
@@ -52,3 +53,4 @@ int strcpy_s(char *dest, int sz, const char *src) {
 	strcpy(dest, src);
 	return 0;
 }
+#endif
