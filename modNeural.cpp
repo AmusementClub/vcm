@@ -278,7 +278,7 @@ VSNode *node, VSCore *core, const VSAPI *vsapi)
 
 			char nl = '\n';
 
-			char * title = "vcMod_Neural_xpts_ypts_inodes_and_Weights";
+			const char * title = "vcMod_Neural_xpts_ypts_inodes_and_Weights";
 
 			ofile << title << nl;
 
@@ -367,7 +367,7 @@ VSNode *node, VSCore *core, const VSAPI *vsapi)
 		const VSFormat *fi = d->vi->format;
 
 
-		char * title = "vcMod_Neural_xpts_ypts_inodes_and_Weights";
+		const char * title = "vcMod_Neural_xpts_ypts_inodes_and_Weights";
 		char buf[256];
 		buf[255] = '\0';
 
