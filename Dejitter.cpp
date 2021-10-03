@@ -34,7 +34,7 @@ Author : V.C.Mohan
 #include "windows.h"
 #include <stdint.h>
 #include "VapourSynth.h"
-#include "VsHeper.h"
+#include "VSHelper.h"
 #include "colorconverter.h"
 */
 
