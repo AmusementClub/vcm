@@ -7,6 +7,7 @@
 #include <assert.h>
 
 typedef void *HINSTANCE;
+typedef int errno_t;
 #define TEXT(x) x
 
 #ifdef __APPLE__
