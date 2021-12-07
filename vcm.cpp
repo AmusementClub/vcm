@@ -5,7 +5,7 @@ It has frequency domain functions as well as some utility and test functions
  a).functions that modify pixel values to reduce noise or introduce blur:-
  amp, variance, hist, gBlur, mBlur, median, saltPepper, veed, fan, neural
  b). functions that move pixels:-
- deBarrel, rotate, reform, deJitter
+ deBarrel, rotate, reform, deJitter, correctLD
  c) functions of miscellaneous nature;-
  jitter, pattern, grid, bokeh, colorbox
  d) Functions that use Freq Domain :- f1quiver, f1qtest, f2quiver, f2qtest, 
@@ -13,7 +13,7 @@ It has frequency domain functions as well as some utility and test functions
  
 
 Author V.C.Mohan.
-Date 24 Dec 2020, 31 Dec 2020, 21 April 2021
+Date 24 Dec 2020, 31 Dec 2020, 31 May 2021, 5 Sep 2021
 copyright 2015- 2021
 
 This program is free software: you can redistribute it and/or modify
@@ -58,6 +58,10 @@ This program is free software: you can redistribute it and/or modify
 #include "interpolationMethods.h"
 #include "colorconverter.h"
 #include "statsAndOffsets.h"
+# include "ConvertBGRforInput.h"
+#include "Squircles.h"
+#include "FisheyeMethods.h"
+#include "FourFoldSymmetricMarking.h"
 
 #include "fftwlite.h"
 //#include "fftw3.h"
@@ -68,12 +72,14 @@ This program is free software: you can redistribute it and/or modify
 #include "F2QuiverSpectralDisplay.h"
 #include "FQDomainHelper.h"
 #include "statsAndOffsets.h"
+#include "spotlightDim.h"
 
 #include "colorBox.cpp"
 #include "Grid.cpp"
 #include "Pattern.cpp"
 #include "Jitter.cpp"
 #include "Dejitter.cpp"
+#include "Circles.cpp"
 
 #include "F1Quiver.cpp"
 #include "F2Quiver.cpp"
@@ -87,12 +93,14 @@ This program is free software: you can redistribute it and/or modify
 #include "moveRotate.cpp"
 #include "moveDeBarrel.cpp"
 #include "moveReform.cpp"
+#include "Fisheye.cpp"
 
 #include "Mean.cpp"
 #include "modFan.cpp"
 #include "modAmplitude.cpp"
 #include "modHistogram.cpp"
 #include "modMedian.cc"
+
 #include "modGBlur.cpp"
 #include "modMBlur.cpp"
 #include "modVariance.cpp"
@@ -101,6 +109,7 @@ This program is free software: you can redistribute it and/or modify
 #include "modNeural.cpp"
 #include "modBokeh.cpp"
 #include "StepFilter.cpp"
+
 
 VS_EXTERNAL_API(void) VapourSynthPluginInit(VSConfigPlugin configFunc, VSRegisterFunction registerFunc, VSPlugin *plugin)
 {
@@ -124,17 +133,21 @@ VS_EXTERNAL_API(void) VapourSynthPluginInit(VSConfigPlugin configFunc, VSRegiste
 	registerFunc("F1QLimit", "clip:clip;span:int:opt;limit:int:opt;freqs:int[];", f1qlimitCreate, 0, plugin);
 	registerFunc("F2Quiver", "clip:clip;frad:int:opt;ham:int:opt;test:int:opt;morph:int:opt;gamma:float:opt;fspec:int[];", f2quiverCreate, 0, plugin);
 	registerFunc("F2QLimit", "clip:clip;grid:int:opt;inner:int:opt;warn:int:opt;fspec:int[];", f2qlimitCreate, 0, plugin);
-	registerFunc("F2QBlur", "clip:clip;line:int:opt;x:int:opt;y:int:opt;", blurCreate, 0, plugin);
-	registerFunc("F2QSharp", "clip:clip;line:int:opt;wn:float:opt;x:int:opt;y:int:opt;frad:int:opt;ham:int:opt;;scale:float:opt;rgb:int[]:opt;yuv:int[]:opt", sharpCreate, 0, plugin);
-	registerFunc("F2QCorr", "clip:clip;bclip:clip;cx:int:opt;cy:int:opt;txt:int:opt;filename:data:opt;sf:int:opt;ef:int:opt;every:int:opt;", corrCreate, 0, plugin);
+	registerFunc("F2QBlur", "clip:clip;line:int:opt;x:int:opt;y:int:opt;", f2qblurCreate, 0, plugin);
+	registerFunc("F2QSharp", "clip:clip;line:int:opt;wn:float:opt;x:int:opt;y:int:opt;frad:int:opt;ham:int:opt;;scale:float:opt;rgb:int[]:opt;yuv:int[]:opt", f2qsharpCreate, 0, plugin);
+	registerFunc("F2QCorr", "clip:clip;bclip:clip;cx:int:opt;cy:int:opt;txt:int:opt;filename:data:opt;sf:int:opt;ef:int:opt;every:int:opt;", f2qcorrCreate, 0, plugin);
 	registerFunc("F2QBokeh", "clip:clip;clipb:clip;grid:int:opt;thresh:float:opt;rgb:int[]:opt;yuv:int[]:opt;", f2qbokehCreate, 0, plugin);
 
 	registerFunc("Rotate", "clip:clip;bkg:clip;angle:float;dinc:float:opt;lx:int:opt;wd:int:opt;ty:int:opt;ht:int:opt;"
 							"axx:int:opt;axy:int:opt;intq:int:opt;", rotateCreate, 0, plugin);
-	registerFunc("DeBarrel", "clip:clip;abc:float[];vhr:float:opt;pin:int:opt;yind:int:opt;ypin:int:opt;yabc:float[]:opt;"
-					"test:int:opt;eabc:float[]:opt;eyabc:float[]:opt;rgb:int[]:opt;dots:data:opt;", debarrelCreate, 0, plugin);
+	registerFunc("DeBarrel", "clip:clip;abc:float[];method:int:opt;pin:int:opt;q:int:opt;test:int:opt;dots:data:opt;dim:float:opt;", debarrelCreate, 0, plugin);
+	
 	registerFunc("Reform", "clip:clip;bkg:clip;intq:int:opt;norm:int:opt;rect:float[]:opt;quad:float[];q2r:int:opt;", reformCreate, 0, plugin);
 	
+	registerFunc("Fisheye", "clip:clip;method:int:opt;xo:int:opt;yo:int:opt;frad:int:opt;sqr:int:opt;"
+		"rix:float:opt;fov:float:opt;test:int:opt;dim:float:opt;q:int:opt;dots:int:opt;", fisheyeCreate, 0, plugin);
+	
+
 	registerFunc("ColorBox", "format:int:opt;luma:int:opt;nbw:int:opt;nbh:int:opt", colorBoxCreate, 0, plugin);
 	registerFunc("Grid", "clip:clip;lineint:int:opt;bold:int:opt;vbold:int:opt;color:int[]:opt;bcolor:int[]:opt;vbcolor:int[]:opt;style:int:opt;", gridCreate, 0, plugin);
 	registerFunc("Pattern", "clip:clip;type:int:opt;orient:int:opt;spk:int:opt;spike:float:opt;wl:int:opt;x:int:opt;y:int:opt;rad:int:opt;stat:int:opt;overlay:float:opt;bgr:int[]:opt;", patternCreate, 0, plugin);
@@ -143,5 +156,6 @@ VS_EXTERNAL_API(void) VapourSynthPluginInit(VSConfigPlugin configFunc, VSRegiste
 	registerFunc("Bokeh", "clip:clip;clipb:clip;grid:int:opt;thresh:float:opt;rgb:int[]:opt;yuv:int[]:opt;", bokehCreate, 0, plugin);
 	registerFunc("StepFilter", "clip:clip;add:int:opt;boost:float:opt;"
 		"segmenthor:int:opt;segmentvert:int:opt;limit:int:opt;", stepfilterCreate, 0, plugin);
+	registerFunc("Circles", "clip:clip;xo:int:opt;yo:int:opt;frad:int:opt;cint:int:opt;dots:int:opt;rgb:int[]:opt;dim:float:opt;", circlesCreate, 0, plugin);
 
 }

@@ -147,7 +147,7 @@ typedef struct {
 			unsigned char * dp[] = { NULL, NULL, NULL, NULL };
 			int pitch[4];
 
-			int pht[4], pwd[4];
+		//	int pht[4], pwd[4];
 			for (int p = 0; p < nplanes; p++)
 			{
 				pitch[p] = vsapi->getStride(dst, p) / nbytes;
@@ -275,6 +275,13 @@ typedef struct {
 			vsapi->freeNode(d.node);
 			return;
 		}
+		
+		if (d.vi->format->sampleType == stFloat && d.vi->format->bitsPerSample == 16)
+		{
+			vsapi->setError(out, "deJitter: Half float formats not allowed ");
+			vsapi->freeNode(d.node);
+			return;
+		}
 
 		if (d.vi->format->subSamplingH != 0 || d.vi->format->subSamplingW != 0)
 		{
@@ -283,7 +290,7 @@ typedef struct {
 			return;
 		}
 
-		temp = vsapi->propGetInt(in, "jmax", 0, &err);
+		temp = int64ToIntS(vsapi->propGetInt(in, "jmax", 0, &err));
 
 		if (err)
 			d.jmax = 40;
@@ -295,7 +302,7 @@ typedef struct {
 		}
 		d.jmax = temp;
 
-		temp = vsapi->propGetInt(in, "wsyn", 0, &err);
+		temp = int64ToIntS(vsapi->propGetInt(in, "wsyn", 0, &err));
 
 		if (err)
 			d.wsyn = 20;
@@ -307,7 +314,7 @@ typedef struct {
 		}
 		else
 			d.wsyn = temp;
-		d.thresh = vsapi->propGetFloat(in, "thresh", 0, &err);
+		d.thresh = (float)vsapi->propGetFloat(in, "thresh", 0, &err);
 
 		if (err)
 			d.thresh = 0.08f;
