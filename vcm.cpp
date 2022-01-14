@@ -99,8 +99,8 @@ This program is free software: you can redistribute it and/or modify
 #include "modFan.cpp"
 #include "modAmplitude.cpp"
 #include "modHistogram.cpp"
-//#include "modMedian.cc"
-#include "Median2.cpp"
+#include "modMedian.cpp"
+//#include "Median2.cpp"
 
 #include "modGBlur.cpp"
 #include "modMBlur.cpp"
