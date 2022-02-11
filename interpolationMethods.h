@@ -1,35 +1,49 @@
-#ifndef INTERPOLATION_STUFF_V_C_MOHAN
-#define INTERPOLATION_STUFF_V_C_MOHAN
+#ifndef INTERPOLATION_METHODS_V_C_MOHAN
+#define INTERPOLATION_METHODS_V_C_MOHAN
 //-------------------------------------------------------------------
-void LanczosCoeff(float* cbuf, int span, int quantp);
+void LanczosCoeff(float* cbuf, const int span, const int quantp);
 
 float sinc(float f);
 
-void CubicIntCoeff(float* cbuf, int quantiles);
+void CubicIntCoeff(float* cbuf, const int quantiles);
 
-void LinearIntCoeff(float* cbuf, int quantiles);
+void LinearIntCoeff(float* cbuf, const int quantiles);
+float * setInterpolationScheme(const int q, const int quantile, int *dspan);
 
 //-------------------------------------------------------------------
 template <typename finc>
-float LaQuantile(const finc* point, int spitch,
-	int span, int qx, int qy, float* lbuf);
+float LaQuantile(const finc* point, const int spitch, const int kb,
+	const int span, const int qx, const int qy, const float* lbuf);
 
 template <typename finc>
-bool needNotInterpolate(const finc* sp, int pitch, int kb);
+bool needNotInterpolate(const finc* sp, int const pitch, const int kb);
+
+template <typename finc>
+float alongLineInterpolate(const finc* point, const int step,
+	const int span, const int quant, const float* iBuf);
+
+int bestOfNineIndex(float fx, float fy);
+int bestOfNineIndex(int qx, int qy, int quantile);
+template <typename finc>
+finc bestOfNine(const finc* fp, const int fpitch, const int kb,
+	const int x, const int y, const int index);
 
 //restricts values to min and max
 //---------------------------------------------------------------------------------
 template <typename  finc>
-finc clamp(float val, finc min, finc max);
+finc clamp(const float val, const finc min, const finc max);
 //--------------------------------------------------------------------------------
+#ifndef CLAMP_V_C_MOHAN
+#define CLAMP_V_C_MOHAN
 template <typename  finc>
-finc clamp(float val, finc min, finc max)
+finc clamp(const float val, const finc min, const finc max)
 {
 
-	return val < min ? min : val > max ? max : val;
+	return (finc)(val < min ? min : val > max ? max : val);
 }
+#endif
 //----------------------------------------------------------------------------------
-float fclamp(float val, float min, float max)
+float fclamp(const float val, const float min, const float max)
 {
 	return val < min ? min : val > max ? max : val;
 }
@@ -39,8 +53,8 @@ float fclamp(float val, float min, float max)
 template <typename finc>
 // this is general. can be used for any span 2 4 6 and bytes per pixel planar formats
 
-float LaQuantile(const finc* point, int spitch,
-	int span, int qx, int qy, float* lbuf)
+float LaQuantile(const finc* point, const int spitch, const int kb,
+	const int span, const int qx, const int qy, const float* lbuf)
 {
 	// nb = bit depth of sample. for float 0
 	// span = 6 for 6 x 6 point interpolation
@@ -54,7 +68,8 @@ float LaQuantile(const finc* point, int spitch,
 	}
 	float xy[6];	//
 	point += (-span / 2 + 1) * spitch;
-	float* lbufr = lbuf + span * qx;
+
+	const float* lbufr = lbuf + span * qx;
 
 	for (int h = 0; h < span; h++)
 	{
@@ -62,13 +77,14 @@ float LaQuantile(const finc* point, int spitch,
 
 		for (int w = 0; w < span; w++)
 		{
-			xy[h] += point[w - span / 2 + 1] * lbufr[w];
+			xy[h] += point[(w - span / 2 + 1) * kb] * lbufr[w];
 		}
 
 		point += spitch;
 	}
 
 	float sum = 0;
+
 	lbufr = lbuf + span * qy;
 
 	for (int h = 0; h < span; h++)
@@ -82,17 +98,17 @@ float LaQuantile(const finc* point, int spitch,
 //-------------------------------------------------------------------------------------------------	
 
 template <typename finc>
-bool needNotInterpolate(const finc* sp, int pitch, int kb)
+bool needNotInterpolate(const finc* sp, const int pitch, const int kb)
 {
 	return (*sp == *(sp + kb) && *sp == *(sp + pitch) && *sp == *(sp + pitch + kb));
 }
 //-------------------------------------------------
 
-void LinearIntCoeff(float* cbuf, int quantiles)
+void LinearIntCoeff(float* cbuf, const int quantiles)
 {
 	float q = 0, qinc = 1.0f / quantiles;
 
-	for (int i = 0; i < 2 * quantiles; i += 2)
+	for (int i = 0; i < 2 * quantiles + 2; i += 2)
 	{
 		cbuf[i] = 1.0f - q;
 		cbuf[i + 1] = q;
@@ -101,6 +117,19 @@ void LinearIntCoeff(float* cbuf, int quantiles)
 	}
 }
 //------------------------------------------------
+template <typename finc>
+float alongLineInterpolate(const finc* point, const int step,
+	const int span, const int quant, const float* iBuf)
+{
+	float sum = 0.0;
+
+	for (int i = 0; i < span; i++)
+	{
+		sum += iBuf[span * quant + i] * point[(i + 1 - span / 2) * step];
+	}
+	return sum;
+}
+//...................................................................
 
 /* For cubic interpolation generates coefficients for each quantile
  between 0.0 and 3.0
@@ -158,7 +187,7 @@ cbuf should be 4 * quantiles  plus 4
  final result is left shifted same amount
 */
 
-void CubicIntCoeff(float* cbuf, int quantiles)
+void CubicIntCoeff(float* cbuf, const int quantiles)
 {
 
 
@@ -199,7 +228,7 @@ void CubicIntCoeff(float* cbuf, int quantiles)
 
 //-------------------------------------------------------------------
 
-void LanczosCoeff(float* cbuf, int span, int quantp)
+void LanczosCoeff(float* cbuf, const int span, const int quantp)
 {
 	/*
 	Fills buffer with coefficients
@@ -251,11 +280,109 @@ float sinc(float f)
 
 		f = -f;
 
-	f *= 3.14159265359;	// pi
+	f *= (float)M_PI;	// pi
 
-	return (f != 0) ? sin(f) / f : 1.0f; ;
+	return (f != 0) ? (float)sin(f) / f : 1.0f; ;
 }
-//----------------------------------------------------------------------------------------------	
+//......................................................................
+int bestOfNineIndex(float fx, float fy)
+{
+	int index = 0;
+	if (fx < 0.25f)
+		index = 0;
+	else if (fx < 0.75f)
+		index = 1;
+	else
+		index = 2;
 
+	if (fy < 0.25f)
+		index += 0;
+	else if (fy < 0.75f)
+		index += 3;
+	else
+		index += 6;
+
+	return index;
+}
+
+
+int bestOfNineIndex(int qx, int qy, int quantile)
+{
+	int index = 0;
+	if (qx < quantile / 4)
+		index = 0;
+	else if (qx < (3 * quantile) / 4)
+		index = 1;
+	else
+		index = 2;
+
+	if (qy < quantile / 4)
+		index += 0;
+	else if (qy < (3 * quantile) / 4)
+		index += 3;
+	else
+		index += 6;
+
+	return index;
+}
+template <typename finc>
+finc bestOfNine(const finc* fp, const int fpitch, const int kb,
+	const int x, const int y, const int index)
+{
+
+	finc xnear = *(fp + y * fpitch + x * kb);
+	finc ynear = xnear;
+	finc xnext = *(fp + y * fpitch + (x + 1) * kb);
+	finc ynext = *(fp + (y + 1) * fpitch + x * kb);
+	finc xynext = *(fp + (y + 1) * fpitch + (x + 1) * kb);
+
+	switch (index)
+	{
+	case 0: return xnear;
+	case 1: return (xnear + xnext) / 2;
+	case 2: return xnext;
+	case 3: return ynear;
+	case 4: return (xnear + xnext + ynear + ynext) / 4;
+	case 5: return (xnext + xynext) / 2;
+	case 6: return ynext;
+	case 7: return (ynext + xynext) / 2;
+	case 8: return xynext;
+	}
+	return 0;
+}
+
+//----------------------------------------------------------------------------------------------	
+float * setInterpolationScheme(const int q, const int quantile, int *dspan)
+{
+	// presets.		
+	float* iCoeff = NULL;
+	int span;
+	if (q == 1)
+	{
+		span = 2;	// ninept 
+		iCoeff = NULL;
+	}
+	else if (q == 2)
+	{
+		span = 2;
+		iCoeff = new float[span * (quantile + 1)];
+		LinearIntCoeff(iCoeff, quantile);
+	}
+	else if (q == 3)
+	{
+		span = 4; // cubic
+		iCoeff = new float[span * (quantile + 1)];
+		CubicIntCoeff(iCoeff, quantile);
+	}
+	else if (q == 4)
+	{
+		span = 6; // lanczos is 6 x 6
+		iCoeff = new float[span * (quantile + 1)];	// 1/64 accuracy 6 coeff per quantile
+		// create lanczos coefficients for every quantile
+		LanczosCoeff(iCoeff, span, quantile);
+	}
+	*dspan = span;
+	return iCoeff;
+}
 #endif // !INTERPOLATION_STUFF_V_C_MOHAN
 

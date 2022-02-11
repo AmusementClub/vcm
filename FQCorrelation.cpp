@@ -62,7 +62,7 @@ typedef struct
 	float* inBuf;
 	fftwf_complex* outBuf;
 	fftwf_complex* Bfreq;
-}CorrData;
+}F2QCorrData;
 //------------------------------------------------------------------
 	
 	void xCorrelate(fftwf_complex* Afreq, fftwf_complex* Bfreq, int frqwidth, int hbest, bool center);
@@ -72,7 +72,7 @@ typedef struct
 	void xTransferToDst(finc * dp, int dpitch, 
 		int dwd, int dht, float * buf, int bestwd, int bestht, finc max);
 	template <typename finc>
-	int xFullProcess(CorrData *d, 
+	int xFullProcess(F2QCorrData *d, 
 		finc * dp, const finc * ap, const finc * bp, int abpitch, 
 		int pwd, int pht, int dpitch, finc max);
 	template <typename finc>
@@ -85,9 +85,9 @@ typedef struct
 *************************************************/
 //Here is the acutal constructor code used
 
-static void VS_CC corrInit(VSMap *in, VSMap *out, void **instanceData, VSNode *node, VSCore *core, const VSAPI *vsapi)
+static void VS_CC f2qcorrInit(VSMap *in, VSMap *out, void **instanceData, VSNode *node, VSCore *core, const VSAPI *vsapi)
 {
-	CorrData *d = (CorrData *)* instanceData;
+	F2QCorrData *d = (F2QCorrData *)* instanceData;
 	//vsapi->setVideoInfo(d->vi, 1, node);	
 	const int fht = ((d->avi->height + 3) >> 2) << 2;
 	const int fwd = ((d->avi->width + 3) >> 2) << 2;
@@ -203,7 +203,7 @@ int xNormGamma(float * buf,  int size)
 	// normalize. Avoid divide by zero.
 	if (maximum > minimum)
 	{
-		float mult = 1.0 / (maximum - minimum);	// mult is faster than div
+		float mult = 1.0f / (maximum - minimum);	// mult is faster than div
 
 		for (int n = 0; n < size; n++)
 		{
@@ -232,7 +232,7 @@ void xTransferToDst(finc * dp, int dpitch,
 	{		
 		for (int w = 0; w < dwd; w++)
 		{
-			dp[w] = buf[w] * max;	// converts normalized data to actual values
+			dp[w] = (finc)(buf[w] * max);	// converts normalized data to actual values
 		}
 		dp += dpitch;
 		buf += bestwd;
@@ -252,7 +252,7 @@ void drawOrigin(float* inBuf, int wbest, int hbest, finc val)
 }
 //--------------------------------------------------------------------------------------------
 template <typename finc>
-int xFullProcess(CorrData* d,  // forward fft of the two input frames
+int xFullProcess(F2QCorrData* d,  // forward fft of the two input frames
 	finc * dp, 	// output frame
 	const finc * ap,  const finc * bp, int abpitch, // input A and B frames, pitch of frames
 	int pwd, int pht, int dpitch, finc max) //  frame dimensions and max pixel value
@@ -285,10 +285,10 @@ int xFullProcess(CorrData* d,  // forward fft of the two input frames
 }
 
 //---------------------------------------------------------------------------------------------
-static const VSFrameRef *VS_CC corrGetFrame(int n, int activationReason, void **instanceData,
+static const VSFrameRef *VS_CC f2qcorrGetFrame(int n, int activationReason, void **instanceData,
 	void **frameData, VSFrameContext *frameCtx, VSCore *core, const VSAPI *vsapi)
 {
-	CorrData *d = (CorrData *)* instanceData;
+	F2QCorrData *d = (F2QCorrData *)* instanceData;
 
 	if (activationReason == arInitial) {
 		// Request the source frames on the first call
@@ -453,9 +453,9 @@ static const VSFrameRef *VS_CC corrGetFrame(int n, int activationReason, void **
 }
 
 // Free all allocated data on filter destruction
-static void VS_CC corrFree(void *instanceData, VSCore *core, const VSAPI *vsapi)
+static void VS_CC f2qcorrFree(void *instanceData, VSCore *core, const VSAPI *vsapi)
 {
-	CorrData *d = (CorrData *)instanceData;
+	F2QCorrData *d = (F2QCorrData *)instanceData;
 	vsapi->freeNode(d->node[0]);
 	vsapi->freeNode(d->node[1]);
 	d-> fftwf_free(d->inBuf);
@@ -469,10 +469,10 @@ static void VS_CC corrFree(void *instanceData, VSCore *core, const VSAPI *vsapi)
 }
 
 // This function is responsible for validating arguments and creating a new filter
-static void VS_CC corrCreate(const VSMap *in, VSMap *out, void *userData, VSCore *core, const VSAPI *vsapi)
+static void VS_CC f2qcorrCreate(const VSMap *in, VSMap *out, void *userData, VSCore *core, const VSAPI *vsapi)
 {
-	CorrData d;
-	CorrData *data;
+	F2QCorrData d;
+	F2QCorrData *data;
 	int err;
 	int temp;
 	// Get a clip reference from the input arguments. This must be freed later.
@@ -485,14 +485,14 @@ static void VS_CC corrCreate(const VSMap *in, VSMap *out, void *userData, VSCore
 
 	if (!isSameFormat(d.avi, bvi) || d.avi->numFrames != bvi->numFrames  )
 	{
-		vsapi->setError(out, "Corr: both clips must be of same format, length and frame dimensions ");
+		vsapi->setError(out, "F2QCorr: both clips must be of same format, length and frame dimensions ");
 		vsapi->freeNode(d.node[0]);
 		vsapi->freeNode(d.node[1]);
 		return;
 	}
 	if (d.avi->format->colorFamily == cmCompat)
 	{
-		vsapi->setError(out, "Corr: compat format is not accepted. Only Planar format clips can be input ");
+		vsapi->setError(out, "F2QCorr: compat format is not accepted. Only Planar format clips can be input ");
 		vsapi->freeNode(d.node[0]);
 		vsapi->freeNode(d.node[1]);
 		return;
@@ -502,7 +502,7 @@ static void VS_CC corrCreate(const VSMap *in, VSMap *out, void *userData, VSCore
 	if (!isConstantFormat(d.avi) || d.avi->width == 0 || d.avi->height == 0
 		|| d.avi->width != bvi->width || d.avi->height != bvi->height)
 	{
-		vsapi->setError(out, "Corr: only constant format and const frame dimensions input supported");
+		vsapi->setError(out, "F2QCorr: only constant format and const frame dimensions input supported");
 		vsapi->freeNode(d.node[0]);
 		vsapi->freeNode(d.node[1]);
 		return;
@@ -517,31 +517,31 @@ static void VS_CC corrCreate(const VSMap *in, VSMap *out, void *userData, VSCore
 	// strict checking because of what we wrote in the argument string, the only
 	// reason this could fail is when the value wasn't set by the user.
 	// And when it's not set we want it to default to enabled.
-	temp = !!vsapi->propGetInt(in, "txt", 0, &err);
+	temp = !!int64ToIntS(vsapi->propGetInt(in, "txt", 0, &err));
 	if (err || temp == 0)
 		d.txt = false;
 	else
 		d.txt = true;
 	if (d.txt)
 	{		
-		temp = vsapi->propGetInt(in, "cx", 0, &err);
+		temp = int64ToIntS(vsapi->propGetInt(in, "cx", 0, &err));
 		if (err)
 			d.cx = 20;
 		else if (abs(temp) < 2 && abs(temp) > d.avi->width / 8)
 		{
-			vsapi->setError(out, "fqCorr: absolute values of cx must be between 2 and 1/8 frame wwidth");
+			vsapi->setError(out, "F2QCorr: absolute values of cx must be between 2 and 1/8 frame wwidth");
 			vsapi->freeNode(d.node[0]);
 			vsapi->freeNode(d.node[1]);
 			return;
 		}
 		else
 			d.cx = abs(temp);
-		temp = vsapi->propGetInt(in, "cy", 0, &err);
+		temp = int64ToIntS(vsapi->propGetInt(in, "cy", 0, &err));
 		if (err)
 			d.cy = d.cx <= d.avi->height / 8 ? d.cx : d.avi->height / 8;
 		else if (abs(temp) < 2 && abs(temp) > d.avi->height / 8)
 		{
-			vsapi->setError(out, "fqCorr: absolute values of cy must be between 2 and 1/8 frame height");
+			vsapi->setError(out, "F2QCorr: absolute values of cy must be between 2 and 1/8 frame height");
 			vsapi->freeNode(d.node[0]);
 			vsapi->freeNode(d.node[1]);
 			return;
@@ -554,7 +554,7 @@ static void VS_CC corrCreate(const VSMap *in, VSMap *out, void *userData, VSCore
 			d.sf = 0;
 		else if (d.sf < 0 || d.sf >= d.avi->numFrames - 1)
 		{
-			vsapi->setError(out, "fqCorr: sf must be within clip");
+			vsapi->setError(out, "F2QCorr: sf must be within clip");
 			vsapi->freeNode(d.node[0]);
 			vsapi->freeNode(d.node[1]);
 			return;
@@ -564,7 +564,7 @@ static void VS_CC corrCreate(const VSMap *in, VSMap *out, void *userData, VSCore
 			d.ef = d.avi->numFrames - 1;
 		else if (d.ef < d.sf || d.ef >= d.avi->numFrames)
 		{
-			vsapi->setError(out, "fqCorr: ef must not be less than sf and must be within clip");
+			vsapi->setError(out, "F2QCorr: ef must not be less than sf and must be within clip");
 			vsapi->freeNode(d.node[0]);
 			vsapi->freeNode(d.node[1]);
 			return;
@@ -576,7 +576,7 @@ static void VS_CC corrCreate(const VSMap *in, VSMap *out, void *userData, VSCore
 			d.every = temp;
 		else if (d.every < temp || d.every >= d.ef - d.sf)
 		{
-			vsapi->setError(out, "fqCorr: every should not result in either zero or over 1000 records");
+			vsapi->setError(out, "F2QCorr: every should not result in either zero or over 1000 records");
 			vsapi->freeNode(d.node[0]);
 			vsapi->freeNode(d.node[1]);
 			return;
@@ -585,7 +585,7 @@ static void VS_CC corrCreate(const VSMap *in, VSMap *out, void *userData, VSCore
 		const char * fn = vsapi->propGetData(in, "filename", 0, &err);
 		if (err)
 		{
-			vsapi->setError(out, "fqCorr: valid File name with full path must be specified");
+			vsapi->setError(out, "F2QCorr: valid File name with full path must be specified");
 			vsapi->freeNode(d.node[0]);
 			vsapi->freeNode(d.node[1]);
 			return;
@@ -597,10 +597,10 @@ static void VS_CC corrCreate(const VSMap *in, VSMap *out, void *userData, VSCore
 		
 	// I usually keep the filter data struct on the stack and don't allocate it
 	// until all the input validation is done.
-	data = (CorrData *)malloc(sizeof(d));
+	data = (F2QCorrData *)malloc(sizeof(d));
 	*data = d;
 
-	vsapi->createFilter(in, out, "fqCorr", corrInit, corrGetFrame, corrFree, fmParallelRequests, 0, data, core);
+	vsapi->createFilter(in, out, "F2QCorr", f2qcorrInit, f2qcorrGetFrame, f2qcorrFree, fmParallelRequests, 0, data, core);
 }
 
 //registerFunc("fqCorr", "clip:clip;bclip:clip;cx:int:opt;cy:int:opt;

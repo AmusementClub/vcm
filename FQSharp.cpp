@@ -62,10 +62,10 @@ typedef struct
 	float* inBuf;
 	fftwf_complex* outBuf;
 
-} SharpData;
+} F2QSharpData;
 //--------------------------------------------------------------------------------------
 template <typename finc>
-void sharpenPlane(SharpData* d, const finc* sp, finc* dp, int pitch,
+void sharpenPlane(F2QSharpData* d, const finc* sp, finc* dp, int pitch,
 					int height, int width, finc min, finc max);
 //----------------------------------------------------------------------------
 
@@ -73,9 +73,9 @@ void sharpenPlane(SharpData* d, const finc* sp, finc* dp, int pitch,
 // This function is called immediately after vsapi->createFilter(). This is the only place where the video
 // properties may be set. In this case we simply use the same as the input clip. You may pass an array
 // of VSVideoInfo if the filter has more than one output, like rgb+alpha as two separate clips.
-static void VS_CC sharpInit(VSMap *in, VSMap *out, void **instanceData, VSNode *node, VSCore *core, const VSAPI *vsapi)
+static void VS_CC f2qsharpInit(VSMap *in, VSMap *out, void **instanceData, VSNode *node, VSCore *core, const VSAPI *vsapi)
 {
-    SharpData *d = (SharpData *) * instanceData;
+    F2QSharpData *d = (F2QSharpData *) * instanceData;
     vsapi->setVideoInfo(d->vi, 1, node);
 
     const VSFormat *fi = d->vi->format;
@@ -173,7 +173,7 @@ static void VS_CC sharpInit(VSMap *in, VSMap *out, void **instanceData, VSNode *
 }
 //------------------------------------------------------------------------------------------------
 template <typename finc>
-void sharpenPlane(SharpData* d, const finc * sp, finc * dp, int pitch,
+void sharpenPlane(F2QSharpData* d, const finc * sp, finc * dp, int pitch,
 					 int height, int width, finc min, finc max)					
 {
 	getRealInput2D(d->inBuf, sp, pitch, height, width, d->hbest, d->wbest, false);
@@ -197,10 +197,10 @@ void sharpenPlane(SharpData* d, const finc * sp, finc * dp, int pitch,
 // upstream filters.
 // Once all frames are ready, the filter will be called with arAllFramesReady. It is now time to
 // do the actual processing.
-static const VSFrameRef *VS_CC sharpGetFrame(int n, int activationReason, void **instanceData, 
+static const VSFrameRef *VS_CC f2qsharpGetFrame(int n, int activationReason, void **instanceData, 
 		void **frameData, VSFrameContext *frameCtx, VSCore *core, const VSAPI *vsapi) 
 {
-    SharpData *d = (SharpData *) * instanceData;
+    F2QSharpData *d = (F2QSharpData *) * instanceData;
 
     if (activationReason == arInitial) 
 	{
@@ -290,9 +290,9 @@ static const VSFrameRef *VS_CC sharpGetFrame(int n, int activationReason, void *
 
 //----------------------------------------------------------------
 // Free all allocated data on filter destruction
-static void VS_CC sharpFree(void *instanceData, VSCore *core, const VSAPI *vsapi) 
+static void VS_CC f2qsharpFree(void *instanceData, VSCore *core, const VSAPI *vsapi) 
 {
-    SharpData *d = (SharpData *)instanceData;
+    F2QSharpData *d = (F2QSharpData *)instanceData;
 	
 	d->fftwf_destroy_plan(d->pf);
 	d->fftwf_destroy_plan(d->pinv);
@@ -307,9 +307,9 @@ static void VS_CC sharpFree(void *instanceData, VSCore *core, const VSAPI *vsapi
 //......................................................................................
 
 // This function is responsible for validating arguments and creating a new filter
-static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCore *core, const VSAPI *vsapi) {
-    SharpData d;
-    SharpData *data;
+static void VS_CC f2qsharpCreate(const VSMap *in, VSMap *out, void *userData, VSCore *core, const VSAPI *vsapi) {
+    F2QSharpData d;
+    F2QSharpData *data;
     int err;
 	int temp;
     // Get a clip reference from the input arguments. This must be freed later.
@@ -322,7 +322,7 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
 		&& d.vi->format->colorFamily != cmYUV
 		&& d.vi->format->colorFamily != cmGray)
 	{
-        vsapi->setError(out, "Sharp: Input clip must have constant dimensions and in YUV or RGB or Grey format");
+        vsapi->setError(out, "F2QSharp: Input clip must have constant dimensions and in YUV or RGB or Grey format");
         vsapi->freeNode(d.node);
         return;
     }
@@ -342,7 +342,7 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
     // Let's pretend the only allowed values are 1 or 0...
 		if (temp < 0 || temp > 1)
 	{
-		vsapi->setError(out, "fqSharp: line must be 0 (for circular blur) 1(for linear blur) ");
+		vsapi->setError(out, "F2QSharp: line must be 0 (for circular blur) 1(for linear blur) ");
 		vsapi->freeNode(d.node);
 		return;
 	}
@@ -353,14 +353,14 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
 		else
 			d.line = false;
 	}
-	d.wn = vsapi->propGetFloat(in, "wn", 0, &err);
+	d.wn = (float)vsapi->propGetFloat(in, "wn", 0, &err);
     if (err)
 	{
         d.wn = 0.05f;
 	}
 	else if (d.wn < 0.0001f || d.wn > 0.99f)
 	{
-		vsapi->setError(out, "fqSharp: white noise wn value can only be between 0.0001 and 0.99  ");
+		vsapi->setError(out, "F2QSharp: white noise wn value can only be between 0.0001 and 0.99  ");
 		vsapi->freeNode(d.node);
 		return;
 	}
@@ -374,7 +374,7 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
     //  the only allowed values are 
 		if ( (d.line && d.xcoord < 0) || d.xcoord > d.vi->width / 8 || ( !d.line && d.xcoord < 1))
 	{
-		vsapi->setError(out, "fqSharp: x coordinate can have a value from 0 for line and 1 for circular blur to 1/8th frame width only ");
+		vsapi->setError(out, "F2QSharp: x coordinate can have a value from 0 for line and 1 for circular blur to 1/8th frame width only ");
 		vsapi->freeNode(d.node);
 		return;
 	}
@@ -388,18 +388,18 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
     //  the only allowed values are 
 		if ( d.ycoord <  - d.vi->height / 8 ||  d.ycoord  > d.vi->height / 8)
 	{
-		vsapi->setError(out, "fqSharp: y coordinate can have a value between plus and minus 1/8th frame height only ");
+		vsapi->setError(out, "F2QSharp: y coordinate can have a value between plus and minus 1/8th frame height only ");
 		vsapi->freeNode(d.node);
 		return;
 	}
 	if ( d.xcoord == 0 && d.ycoord == 0)
 	{
-		vsapi->setError(out, "fqSharp: both x and y coordinate must not be zeroes ");
+		vsapi->setError(out, "F2QSharp: both x and y coordinate must not be zeroes ");
 		vsapi->freeNode(d.node);
 		return;
 	}
 	
-	temp = !!vsapi->propGetInt(in, "ham", 0, &err);
+	temp = !!int64ToIntS(vsapi->propGetInt(in, "ham", 0, &err));
 	d.ham = err ||temp == 0 ? false : true;
 
 	if (d.ham)
@@ -411,20 +411,20 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
 		}
 		else if (d.frad < 10 || d.frad > 50)
 		{
-			vsapi->setError(out, "fqSharp: filter radius %age of smaller dimension of frame, can have a value of 10 to 50 only ");
+			vsapi->setError(out, "F2QSharp: filter radius %age of smaller dimension of frame, can have a value of 10 to 50 only ");
 			vsapi->freeNode(d.node);
 			return;
 		}
 	}
 
-	d.scale = vsapi->propGetFloat(in, "scale", 0, &err);
+	d.scale = (float)vsapi->propGetFloat(in, "scale", 0, &err);
     if (err)
 	{
-        d.scale = 0.45;
+        d.scale = 0.45f;
 	}
 	else if (d.scale < 0.000001f || d.scale > 1000000.0f)
 	{
-		vsapi->setError(out, "fqSharp: scale value must be between 0.000001 and 1000000");
+		vsapi->setError(out, "F2QSharp: scale value must be between 0.000001 and 1000000");
 		vsapi->freeNode(d.node);
 		return;
 	}
@@ -439,19 +439,19 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
 		}
 		else if ( ntemp > 3)
 		{ 
-			vsapi->setError(out, "fqSharp: rgb array can not have more than 3 values");
+			vsapi->setError(out, "F2QSharp: rgb array can not have more than 3 values");
 			vsapi->freeNode(d.node);
 			return;
 		}
 		else
 		{
-			temp = !!vsapi->propGetInt(in, "rgb", 0, &err);
+			temp = !!int64ToIntS(vsapi->propGetInt(in, "rgb", 0, &err));
 			d.plane[0] = temp == 0 ? false : true;
 		}
 
 		for (int i = 1; i < 3; i++)
 		{
-			temp = !!vsapi->propGetInt(in, "rgb", i, &err);
+			temp = !!int64ToIntS(vsapi->propGetInt(in, "rgb", i, &err));
 			if (err)
 				d.plane[i] = d.plane[i - 1];
 			else
@@ -475,19 +475,19 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
 		}
 		else if (ntemp > 3)
 		{
-			vsapi->setError(out, "fqSharp: yuv array can not have more than 3 values");
+			vsapi->setError(out, "F2QSharp: yuv array can not have more than 3 values");
 			vsapi->freeNode(d.node);
 			return;
 		}
 		else
 		{
-			temp = !!vsapi->propGetInt(in, "yuv", 0, &err);
+			temp = !!int64ToIntS(vsapi->propGetInt(in, "yuv", 0, &err));
 			d.plane[0] = temp == 0 ? false : true;
 		}
 
 		for (int i = 1; i < 3; i++)
 		{
-			temp = !!vsapi->propGetInt(in, "yuv", i, &err);
+			temp = !!int64ToIntS(vsapi->propGetInt(in, "yuv", i, &err));
 			if (err)
 				d.plane[i] = d.plane[i - 1];
 			else
@@ -498,7 +498,7 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
 
     // I usually keep the filter data struct on the stack and don't allocate it
     // until all the input validation is done.
-    data = (SharpData*)malloc(sizeof(d));
+    data = (F2QSharpData*)malloc(sizeof(d));
     *data = d;
 
     // Creates a new filter and returns a reference to it. Always pass on the in and out
@@ -516,7 +516,7 @@ static void VS_CC sharpCreate(const VSMap *in, VSMap *out, void *userData, VSCor
     // If your filter is really fast (such as a filter that only resorts frames) you should set the
     // nfNoCache flag to make the caching work smoother.
 
-	vsapi->createFilter(in, out, "fqSharp", sharpInit, sharpGetFrame, sharpFree, fmParallelRequests, 0, data, core);
+	vsapi->createFilter(in, out, "F2QSharp", f2qsharpInit, f2qsharpGetFrame, f2qsharpFree, fmParallelRequests, 0, data, core);
 
 }
 /*
