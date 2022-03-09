@@ -29,9 +29,15 @@ jobs:
         run: meson setup builddir/ -Db_vscrt=mt
       - name: Meson compile
         run: meson compile -C builddir/ -v
+      - name: Build release
+        shell: bash
+        run: |
+          mkdir release
+          cp -a docs release
+          cp builddir/*.dll release
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: release-${{matrix.arch}}
           path: |
-            builddir/*.dll
+            release/*
