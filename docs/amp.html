@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<body>
+	   <font color="#c000cc"><h1><center>vcm </center></h1></font>
+	   <BR><font color="#cc0033"><h2>Amp</h2></font>
+	  
+	<BR>	the script call for Amp is
+	 <BR><BR><font color="#993366"><h2>vcm.Amp( clip, [ int useclip = 0] [,clip sclip] [,int connect4 = 1]  ,int sh=[int,int,int], int sm = [int,int,int]])</h2></font><BR>
+	 <BR><font color="#ff00ff">clip:</font>Input constant format Excepting Compat color.
+	
+	<BR><font color="#ff00ff">useclip:</font>  if not set to 0, a smoothed version of input clip to be used for segmentation and must be specified.
+	<BR><font color="#ff00ff">sclip:</font> smoothed version of input clip.Must be specified if useclip was not set to zero
+	<BR><font color="#ff00ff">connect4:</font> if set 0, 8 point and if set 1, 4 point connect is used for segmentation.
+	<BR><font color="#ff00ff">sh:</font> Sharpening
+	 can be -5 to 5, but preferably 1, to be spcified for each plane or atleast for first plane.
+	<BR><font color="#ff00ff">sm:</font> smoothening can be 0 to 10 and to be specified for each plane or at least for first plane.
+	 <P>Amp function segments image on watershed principle. Smoothing is done if sm is not set to 0, restricting to boundaries within each basin.
+	  Sharpening is by spiking watershed boundaries and so must use small values. As watershed is known to over segment an image, the input clip should be clean or
+	  smooth. If useclip parameter is not 0, sclip a pre smoothed version of the input clip(eg: blurred with gBlur function)can be used for segmentation. This segmentation is used to process the input clip and will yeild better results.</P>
+	 

@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Median </h2></font>
+	<BR>
+	The Script call is:-
+	<BR><BR><font color="#993366"><h2>vcm.Median (clip[, int maxgrid = 5] [,int plane=[1,0,0] ] );</h2></font>
+	<BR>
+	<BR><font color="#ff00ff">clip:</font> input clip all formats except Compat.
+	<BR><font color="#ff00ff">maxgrid:</font> maximum size of square grid to which grid can grow fom 3x3 for getting good statistics. Odd number 3 to 11.
+	<BR><font color="#ff00ff">plane:</font> input clip color  planes to be processed. If set to 0, will not process and if set to 1 will be processed.  All 3 values must not be simultaneously specified as zero.
+	
+	<BR>
+	<p>Median Filter is for eliminating certain types of impulsive noise. 
+	  It uses local statistics (minimum, maximum and Median values) of a moving 
+	  local grid, and changes grid size depending on local statistics.</p>
+	  <P>As per theory <BR>Quote "Ordinary Median filters perform well as long as the spatial density of impulsive noise is small.
+		Adaptive Median filter can handle impulsive noise having larger probablity. An additional benefit is 
+		this seeks to preserve detail while smoothing nonimpulse noise something that the traditional Median 
+		filter does not do.</P>
+	<P>	The algorithm used has three purposes.
+	<BR>1.To remove salt and pepper (impulse) noise.
+	<BR>2.To smooth other noise which may not be impulsive
+	<BR>3.To reduce distortion such as excessive thinning or thickening of object boundaries.
+	<BR>" unquote</P>
+	</BODY>
+	</html>
+	

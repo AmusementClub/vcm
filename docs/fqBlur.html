@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>F2QBlur</h2></font>
+	  
+	<BR>	the script call  is:-
+	 <BR><BR><font color="#993366"><h2>vcm.F2QBlur(clip [, int line = 1][,int x = 2][,int y = 2])</h2></font><BR><BR>
+	 
+	 <BR><font color="#ff00ff"> clip:</font> input clip must have constant dimensions and of RGB or YUV or Grey format only. All 3 planes of RGB, and YUV formats are processed. </BR>
+	 <BR><font color="#ff00ff">line:</font> If set to 1 linear type (motion blur). If 0 circular type such as camera out of focus.
+	 <BR><font color="#ff00ff">x:</font> x coord of line end. Must be in range of  0 to 1/8 of frame width. For circular blur this is  radius of circle. Minimum 1, max 1/8 of width. Value is symmetrical to origin i.e. -x to + x.; 
+	 <BR><font color="#ff00ff">y:</font> y coord of line end. Valid values are from - 1/8 to 1/8 of frame height. Value is symmetrical to origin (-y to y). For circular blur Y value is ignored.
+	 <P> This transforms data into frequency domain utilising  libfftw3f-3.dll ( or, FFTW3 dll, or fftw.dll) of fftw.org
+	    being available in path.</P>
+		</BODY>
+		</html>
+	 

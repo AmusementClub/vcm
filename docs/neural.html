@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Neural </h2></font>
+	
+	<BR>The call script is :-
+	<BR><BR><font color="#993366"><h2>vcm.Neural(clip,[str txt = "none"[ ,str fname][,clip tclip]] [,int iter = 200][ ,int bestof = 1][, int wset = 0][,int xpts = 3][, int ypts = xpts][, int tlx = xpts][, int trx = width - xpts][, int tty = ypts][, int tby = height - ypts][,  int rgb = 1])</h2></font><BR>
+	<BR><font color="#ff00ff">clip:</font> Inpt clip all formats except Compat accepted.
+	
+	
+	<BR><font color="#ff00ff">txt:</font> can be either "none", "read" or "save". In case of read or save fname with full path and file name be given to read from or save to. If "none" it neither saves nor reads a file.
+	if "save" relevant parameters and training progress (error sum) will be saved to a file. If "read", then it gets all parameters and best weights to use from the previously saved file. None of following parameters need to be specified then.
+	<BR><font color="#ff00ff">tclip:</font> clip on which desired data is available. Neural finds optimum weights to match the tclip.	
+	<BR><font color="#ff00ff">iter:</font> number of iterations  for training
+	<BR><font color="#ff00ff">bestof:</font> best of is number of times process repeated with new starting weight sets and use wights which resulted in least error. 
+	<BR><font color="#ff00ff">wset:</font> if set to 0, uses internal random numbers and If set to 1, uses current time seeded random numbers as starting wights.
+	<BR><font color="#ff00ff">xpts, ypts:</font> number of input points along width and height. A max of xpts * ypts = 225 and minimum of 9 can be specified. xpts and ypts must be odd positive numbers.
+	 
+	<BR><font color="#ff00ff">tlx, trx, tty, tby:</font> top left x, right x top y and bottom y coordinates of window for training. Time for training is proportional to xpts * ypts * (trx - tlx - xpts) * (tby - tty - ypts) * iter * bestof.  
+	<BR><font color="#ff00ff">rgb:</font> with RGB input if set to 0, red, if set to 1 green and if set to 2 blue color plane is used for training. For YUV, or Gray only Y is used. processed.
+	<BR>
+	<P>Given an input ( first frame of clip) and its corresponding desired output ( first frame of tclip which has been obtained through some linear processing),
+	function Neural trains itself to get an output as close to desired output as possible. Training window should represent all possible input variations and be as small as possible. Given input grid size ( xpts * ypts) to work on and corresonding desred center points, through repeated iterations and different starting weight sets it finds weights that result in minimum error. The weight set can be saved in a text file and later used for same or similar data . This saves training time that can take several seconds to a few minutes. The input clip is then processed using these weights.  </P>
+</BODY>
+	</html>

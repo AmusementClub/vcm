@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>DeJitter</h2></font>
+<BR> The call for DeJitter function is:-
+	
+	<BR><BR><font color="#993366"><h2>vcm.DeJitter(clip[ , int jmax = 40][,int wsyn = 20][, float thresh = 0.08])</h2></font><BR><BR>
+	
+	<BR><font color="#ff00ff">clip:</font> input clip with no subsampling present
+	<BR><font color="#ff00ff">jmax:</font> maximum jitter expected. search is limited to this width.
+	<BR><font color="#ff00ff">wsyn:</font>  new row sync signal   width.	
+	<BR><font color="#ff00ff">thresh:</font> threshold value for recognising as image and not noise.
+	<BR>While transcribing VHS data due to hardware malfunction, some noise prior to sync signal is recognised as start of a new row and rendered. This function attempts to recognise this type of error and corrects for it. Due to this correction missing end part of row is blackened. If left margin of image is dark, this function may not recognise start of rows.
+	<BR>
+	</BODY>
+	</html>

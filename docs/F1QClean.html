@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>F1QClean</h2></font>
+	  
+	<BR> 
+	
+	<BR>	the script call for F1QClean is
+	 <BR><BR><font color="#993366"><h2>vcm.F1QClean(clip [, int span = 5][,int fromf = 30][,int upto = NYQUIST - 10 - span] )</h2></font><BR><BR>
+	 Currently NYQUIST is defined as 512. Parameter ranges are given as per this NYQUIST value.
+	 <BR><font color="#ff00ff">clip:</font> input clip RGB,  YUV or GRAY constant format. Red, Green and Blue of RGB input or Y  plane of YUV input is processed.
+	 <BR><font color="#ff00ff">span:</font>checks along this frequency bandwidth to find spike for cleaning. 5 to 63
+	 <BR>:: <font color="#9900ff">fromf</font> search start from this frequency.value can be from 10 + span/2 to  245 - span/2. 
+	 <BR>:: <font color="#9900ff">upto</font> search ends at this frequency. value can range from fromf + span to 502 - span.
+	 
+	 </P>
+	 <P> This transforms data into frequency domain utilising  libfftw3f-3.dll ( or, FFTW3 dll, or fftw.dll) of fftw.org
+	    being available in path. It should be kept in mind that most of the image frequency values are near around 0.
+		Caution must be excercised in specifying fromf. This function checks for anamolous values 
+		within a width of span and corrects by replacing with a median value. Small values of 3 to 15 may be prefered for span. 
+		Regular noise of vertical or sub vertical orientation are removed by this function. 
+		If noise is near Horizontal, Transpose function may be used before and after. 
+		Check for values to be used by running F1Quiver with test = 1 prior ( and after to confirm). </P>
+		</BODY>
+		</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Veed </h2></font>
+
+
+<BR><BR>
+		<font color="#993366"><h2>vcm.Veed(clip[,rad = 5][,float str = 5] [,int planes = [1,1,1]][,int plimt = 3][,int mlimit = 3] )</h2></font>
+		<BR>
+		<BR><font color="#ff00ff">clip:</font> input clip of all excepting Compat format accepted.
+		<BR><font color="#ff00ff">rad:</font> radius of gaussian influence. 1 to 8
+		<BR><font color="#ff00ff">str:</font> strength of gaussian influence. 1 to 8.
+		<BR><font color="#ff00ff">planes:</font> Array of 3 values. Plane set to 0 is not processed. 
+		<BR><font color="#ff00ff">plimit:</font> Plus side limit. 0 to 10
+		<BR><font color="#ff00ff">mlimit:</font> minus limit. 0 to 10.
+		<BR><BR> veed filter originally developed to remove some greenish hue seen in some videos. Later it was extended with option for any or all color planes.Uses gaussian predicted value of the center in a circular area of radius rad, filter strength str. Any plane set to 0 is not processed. If set to 1 filtered. plus and minus limits to accept can be specified.
+		</BODY>
+	</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>F2QSharp</h2></font>
+	 
+	 <BR> The call for this function is:-
+	
+	<BR><BR><font color="#993366"><h2>vcm.F2QSharp(clip[ , int line = 0][, float wn = 0.05][,int x = 2][, int y = 2][, int fr = 10][, float scale = 0.45 ][,int rgb = [1, 1, 1] ] [,int yuv = [1, 0, 0] ] )</h2></font><BR><BR>
+	<BR> <font color="#ff00ff">clip:</font> input clip must have constant dimensions and of RGB or YUV or Grey format only. All 3 planes of RGB, only y of YUV formats are processed.
+	 <BR><font color="#ff00ff">line:</font> If set to 1 linear type (motion blur). If set to zero circular type (out of focus camera) blur assumed to be present in input frame
+	 <BR><font color="#ff00ff">wn:</font> white noise to stabilize inversion. 0.0001 to 0.99.
+	 <BR><font color="#ff00ff">x:</font> For linear blur x coord of line end. Valid values are from  0 to 1/8 of frame width. Value is symmetrical to origin. For circular blur, this value is radius of blur circle. Minimum 1, max 1/8 of width; 
+	 <BR><font color="#ff00ff">y:</font> y coord of line end - 1/8 to 1/8 of frame height. For circular blur this is ignored;
+	<BR><font color="#ff00ff"> fr:</font> fr is radius of filter that will be designed , specified as as %age of half of smaller dimension of frame. Valid values are  5 to 20.
+	<BR><font color="#ff00ff"> Scale:</font> specify to get back original amplitudes. Trial and error. 0.000001 to 1000000.0
+	<BR><font color="#ff00ff"> rgb:</font> For RGB input array of 3 values. Value of 1 specifies that plane to be sharpened, 0 means skip plane. 
+	<BR><font color="#ff00ff"> yuv:</font> For YUV input array of 3 values. Value of 1 specifies that plane to be sharpened, 0 means skip plane.
+	<BR><BR>Severe ringing can be seen in output for restoring from large blurring. If blur present is even slightly different to the assumed, likely to fail.In the example given in  freqScript, the blur is known exactly. However the default values work well for mildly out of focus images as shown in one example of bird image. Try with altering scale, x, wn and fr for a good result. 
+	 <P> This transforms data into frequency domain utilising  libfftw3f-3.dll ( or, FFTW3 dll, or fftw.dll) of fftw.org
+	    being available in path.</P>
+		</BODY>
+		</html>
+	

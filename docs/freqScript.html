@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>frequency domain fnctions example scripts</h2></font>
+<BR>
+<BR>example test code for <font color="#f111ff">F1Quiver</font>.Top left freq spectrum with gamma scaling, filter used. Left lower half unscaled specrtrum. Right top half filtered output. Right lower half unfiltered input.
+<BR>core.vcm.F1Quiver(ret,custom = 1,morph = 0,strow=50,nrows=200, test = 1,filter = [50,100,80,1,100,100], gamma = 0.091)
+<BR><BR><img src="F1Q.png" width="720" height="480" alt="" border="0">
+<BR><BR>Example for <font color="#f111ff">F2Quiver</font>. Left input, middle filtered output (test = 0), right freq spectrum and right extreme filters used(test = 1 mode).
+<BR>core.vcm.F2Quiver(ret,test = 0,fspec=[3,4,70,80,12,5,4,75,40,12, 5,4,75,-220,12,3,4,70,80,12],gamma=0.05)
+<BR><BR><img src="F2Q.png" width="1080" height="360" alt="" border="0">
+<BR><BR><BR>
+<BR>#blurred image .
+<BR>core.vcm.F2QBlur(ret,line = 1,x = 4, y = 4)
+<PRE>
+#Sharpened image
+core.vcm.F2QSharp(ret,line = 1,x = 4, y = 4, fr = 10,wn = 0.1, scale = 0.45)
+ret=core.std.StackVertical(clips=[ret1,ret2])
+ret.set_output()
+</PRE>
+<BR><BR><img src="blur_Sharp.png" width="600" height="720" alt="" border="0">	
+	<BR>
+<PRE>
+#  mildly blurred image sharpening
+ret = core.imwri.Read([ "c:\----\Redeyebird.jpg"])
+rets = core.vcm.F2QSharp(ret,line = 0,x = 3, y = 4, fr = 20,wn = 0.2,rgb =[1,1,], yuv=[1,0], scale = 0.4)
+ret=core.std.StackHorizontal(clips=[ret,rets])
+ret.set_output()
+</PRE>
+<BR><BR><img src="bird_Sharp.png" width="800" height="360" alt="" border="0">	
+	<BR>	
+	<BR><BR><BR>
+<BR>#Bokeh effect .
+<pre> script used to arrve at value of thresh:-
+import vapoursynth as vs
+import functools
+import math
+core = vs.get_core()
+
+core.std.LoadPlugin(path=r'c:\....vcm.dll')
+# image to get accentuated Bokeh Effect
+ret = core.imwri.Read([ "c:\.....jpg"])
+# Heavily blurred version of image
+blr = core.vcm.F2QBlur(ret,line = 0, x = 20)
+ret = core.std.Loop(ret,100)
+blr = core.std.Loop(blr,100)
+#
+def animator(n,clipa, clipb):
+	
+	return core.vcm.F2QBokeh(clipa,clipb,grid = 24, thresh = 0.55 + n * 0.01)
+#
+b2k = core.std.FrameEval(ret,functools.partial(animator,clipa=ret, clipb = blr))
+#b2k=core.vcm.F2QBokeh(ret,clipb = blr,thresh = 0.505645, grid = 16)
+#
+ret=core.std.StackHorizontal(clips=[b2k,blr])
+ret.set_output()
+image with similar process in avisynth+
+1. F2QBokeh:
+<img src="../manyPlus/f2qbokeh0.png" width="900" height="720" border="0">
+2. Bokeh:
+<img src="../manyPlus/bokeh0.png" width="900" height="720" border="0">
+</pre>
+	</BODY>
+	</html>

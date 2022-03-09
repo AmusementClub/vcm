@@ -1,0 +1,32 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+
+<BR><font color="#cc0033"><h2>DeBarrel</h2></font>
+<br> 19 oct 2021
+	  
+	 <BR> The script call is:
+	<BR><font color="#993366"><h2>vcm.DeBarrel(clip, float abc[]][, int pin =0][int method = 1][,int q = 1] [, int test = 0][,int dots = 2] [,float dim = 0.25])</h2></font><BR><BR>
+	<BR><font color="#ff00ff">clip:</font> input clip of constant format RGB, GRAY or YUV having no subsampling are accepted.In test mode a single frame may be looped (10 to 100 times) or import functools and animate.
+	<BR><font color="#ff00ff">abc[a,b,c]:</font> coefficients a,
+	b and c. Each of these coefficients positive, less than 0.5 and their sum less than 1.0
+	<BR><font color="#ff00ff">pin:</font> distortion is pin cushion type if set 1 . If 0 Barrel type.
+	<BR><font color="#ff00ff">method:</font> 1. Brown-Conrady model 2. Division model.
+	
+	<BR><font color="#ff00ff">test:</font> if set 0, regular process and if set 1 test mode.
+	
+	<BR><font color="#ff00ff">dots:</font> density of dots in test mode. 1 to 4
+	<BR><font color="#ff00ff">dim:</font> 0 to 1.0. In test to make dots visible input is dimmed by this factor.
+	<P>DeBarrel corrects for common distortions introduced by spherical lenses. A rectangular frame is seen slightly curved out (barrel type distortion) or curved in (pin cushion distortion). 
+	 DeBarrel attempts to correct these
+	distortions given the type and a, b and c values of the distortion. While it is easy to observe type (parameter pin) ( 0 barrel or 1 pin cushion)of distortion present, guessing constants
+	is a different matter. For this purpose a test mode is provided wherein a pattern of distorted dotted lines that will be straightened is overlain on input image. values of a,b anc may be different for the two methods. The input frame is assumed to be properly centered.
+	</BODY>
+	</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Fan </h2></font>
+	<BR>
+	<BR> The script call is:
+	<BR><font color="#993366"><h2>vcm.Fan(clip [ , int span = 5][ ,int edge = 1][ ,int uv = 1 ][,plus = 0.02][,minus = 0.02])</h2></font>
+	<BR>
+	<BR><font color="#ff00ff">clip:</font> input all except Compat format allowed.
+	<BR><font color="#ff00ff">span:</font> width of Fan operator. Odd number between 3 and 51
+	<BR><font color="#ff00ff">edge:</font> If set to 1, protects edges and if set 0 smooths over.
+	<BR><font color="#ff00ff">uv:</font> if set 0, uv planes not filtered. If set 1  u, v planes are filtered.
+	<BR><font color="#ff00ff">plus:</font> Plus tolerance. 0.0 to 0.5.
+	<BR><font color="#ff00ff">minus:</font> minus tolerance 0.0 to 0.5.
+	<BR>
+	<P>In some videos, especially those transcribed from VHS sometimes regular frequency noise is seen across the frame. Sometimes either vertical or horizontal white streaks are also seen. This function filters out such regular noise and streaks. This function works scan line by scan line. Hence if the streaks are horizontal, input may be turned left  and after Fan removes the streaks turned right to restore</P>
+	<P>In case of regular noise Fan need to examine data over a span (odd number from 3 to 51) of apparent wavelength(along horizontal). The central point of this span is either replaced by average or using given tolerances edges are preserved. For streaks shorter span and smaller plus tolerance can be spcified.In case YUV data process of u and v planes are optional. R,G,B planes of RGB are processed. A is just copied.</P>
+	</BODY>
+	</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Rotate</h2></font>
+	  
+	<BR>	the script call for Rotate function is
+	 <BR><font color="#993366"><h2>vcm.Rotate(clip, clip bkg, float angle [, float dinc = 0] [,int lx = 0] [,int wd = width] [,int ty = 0] [,int ht = height] [ [,int axx = lx + wd /2] [,int axy = ty + ht / 2] [,int intq = 2])</h2></font>
+	<BR><font color="#ff00ff">clip:</font> accepts all constant formats excepting compat.
+	<BR><font color="#ff00ff">bkg:</font> = clip. Must be identical to input clip, including length. Same input clip also can be specified.
+	<BR><font color="#ff00ff">angle:</font>angle in degrees  through which input frame is to be Rotated.
+	<BR><font color="#ff00ff">dinc:</font>increent of angle per frame.
+	<BR><font color="#ff00ff">lx:</font>left top x coordinate of window of frame to be Rotated. Must be within frame.
+	<BR><font color="#ff00ff">wd:</font>width of window to be Rotated. Window must be in frame.
+	<BR><font color="#ff00ff">ty:</font>left top y coordinate of window to be Rotated.Window must be within frame.
+	<BR><font color="#ff00ff">ht:</font>height of window. window must be within frame.
+	<BR><font color="#ff00ff">axx:</font>x coordinate of axis of rotation. need not be within frame.However may ensure that at least a part of window remain visible.
+	<BR><font color="#ff00ff">axy:</font>y coordinate of axis of rotation. need not be in frame. However may ensure at least a part of window is visible.
+	<BR><font color="#ff00ff">intq:</font> interpolation type. 0. Nearest point, 1. bilinear, 2.bicubic, 3.Lanczos.
+
+	<P>Rotate function as name implies Rotates the frame (or a window of it through a given angle in degrees. To enable use as a transition, parameter dinc 
+	   increases the rotation angle by this amount per frame. Thevoid spaces created by Rotation in the visible frame space is filled by the background clip bkg</P>
+	 </BODY>
+	 </html>

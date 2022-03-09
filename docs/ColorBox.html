@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>ColorBox </h2></font>
+	
+	<BR> The script call is:
+	<BR><font color="#993366"><h2>vcm.ColorBox( [ int luma = 40][ ,int format = vs.YUV444P8][, int nbh = 4][, int nbw = 6])</h2></font>
+	<BR>
+	
+	
+	<BR><font color="#ff00ff">luma:</font> %age brightness 1 to 99. The luma for each color box will be randomly within luma and )three fourths of luma.
+	<BR><font color="#ff00ff">format:</font> vapoursynth all YUV formats excepting vs.YUV444PH can be specified as output format.
+	<BR><font color="#ff00ff">nbh:</font>number of color boxes along frame height. 2 to 12 allowed. 
+	<BR><font color="#ff00ff">nbw:</font>number of color boxes along frame width. 2 to 12 allowed. 	
+	
+	<P> I felt abscence of colorbars function equivalent in vapoursynth for use as input in testing. ColorBox function outputs a 640 X 480 pixel frames of YUV format for 100 sec @ fps of 24. The output is not a copy of colorbars.</P>
+	</BODY>
+	</html>
+	

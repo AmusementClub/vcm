@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>StepFilter </h2></font>
+	
+	<BR> The script call is:
+	<BR><font color="#993366"><h2>vcm.StepFilter(clip [ , int add = 1][,int limit = 0][ ,float boost = 1.0][,int segmenthor = 60][,int segmentvert = 60])</h2></font>
+	<BR>
+	
+	<BR><font color="#ff00ff"><b>clip:</b></font> Input RGB, YUV, and Gray except Compat and half float formats.
+	<BR><font color="#ff00ff"><b>add:</b></font> If set 0, noise is multiplicative, else additive
+	<BR><font color="#ff00ff"><b>limit:</b></font> If non zero then assumes values higher than averages were probably clipped and will not alter them.
+	<BR><font color="#ff00ff"><b>boost:</b></font> The reference value for correction are multiplied by this value. 0.5 to 5.0 allowed.
+	<BR><font color="#ff00ff"><b>segmenthor:</b></font>average over this width to find correction. If set to zero then full width of frame is used. range 0, 16 to width / 2.
+	<BR><font color="#ff00ff"><b>segmentvert:</b></font>average over this height to find correction. If set to zero then full height of frame is used. range 0, 16 to height / 2.
+	<P> In some vhs video transfers horizontal bars are seen. This function can be used to correct images similar to  <a href="https://forum.doom9.org/attachment.php?attachmentid=17721&stc=1&d=1617841049"> horizontal bars </a> in a doom9 forum thread. Using F1Quiver or F2Quiver are other (better) options. StepFilter is simpler to use. Boost and limit can be tried to improve. However the margins may deteriorate, but can be cropped later.
+	</P>
+	</BODY>
+	</html>
+	

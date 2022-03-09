@@ -62,17 +62,17 @@ typedef struct
 		float* inBuf;
 		fftwf_complex* outBuf;
 		
-}BlurData;	
+}F2QBlurData;	
 /*************************************************/
 template <typename finc>
-void blurPlane2D(BlurData* d, float* inBuf, fftwf_complex* outBuf, float* filter,
+void blurPlane2D(F2QBlurData* d, float* inBuf, fftwf_complex* outBuf, float* filter,
 	fftwf_plan pf, fftwf_plan pinv, const finc* sp, finc* dp,
 	int pitch, int height, int width, int bestY, int bestX, finc min, finc max);
 void positionBlurFilter(fftwf_complex* fout, float* Filter, int bestx, int besty);
 //---------------------------------------------------------------------------------
-static void VS_CC blurInit(VSMap *in, VSMap *out, void **instanceData, VSNode *node, VSCore *core, const VSAPI *vsapi)
+static void VS_CC f2qblurInit(VSMap *in, VSMap *out, void **instanceData, VSNode *node, VSCore *core, const VSAPI *vsapi)
 {
-    BlurData *d = (BlurData *) * instanceData;
+    F2QBlurData *d = (F2QBlurData *) * instanceData;
     vsapi->setVideoInfo(d->vi, 1, node);
 
     const VSFormat *fi = d->vi->format;
@@ -194,7 +194,7 @@ static void VS_CC blurInit(VSMap *in, VSMap *out, void **instanceData, VSNode *n
 //--------------------------------------------------------------------------------------------
 void positionBlurFilter(fftwf_complex* fout, float* Filter, int bestx, int besty)
 {
-	float scale = 1.0 / (bestx * besty);
+	float scale = 1.0f / (bestx * besty);
 
 	// transfer to filter buffer including scaling and removing filtering
 
@@ -211,7 +211,7 @@ void positionBlurFilter(fftwf_complex* fout, float* Filter, int bestx, int besty
 }
 //--------------------------------------------------------------------------------------
 template <typename finc>
-void blurPlane2D(BlurData * d, float * inBuf, fftwf_complex * outBuf, float * filter,
+void blurPlane2D(F2QBlurData * d, float * inBuf, fftwf_complex * outBuf, float * filter,
 	fftwf_plan pf, fftwf_plan pinv, const finc* sp, finc* dp,
 		 int pitch, int height, int width, int bestY, int bestX,  finc min, finc max )
 {
@@ -236,10 +236,10 @@ void blurPlane2D(BlurData * d, float * inBuf, fftwf_complex * outBuf, float * fi
 // upstream filters.
 // Once all frames are ready, the filter will be called with arAllFramesReady. It is now time to
 // do the actual processing.
-static const VSFrameRef *VS_CC blurGetFrame(int n, int activationReason, void **instanceData, 
+static const VSFrameRef *VS_CC f2qblurGetFrame(int n, int activationReason, void **instanceData, 
 		void **frameData, VSFrameContext *frameCtx, VSCore *core, const VSAPI *vsapi) 
 {
-    BlurData *d = (BlurData *) * instanceData;
+    F2QBlurData *d = (F2QBlurData *) * instanceData;
 
     if (activationReason == arInitial) 
 	{
@@ -361,9 +361,9 @@ static const VSFrameRef *VS_CC blurGetFrame(int n, int activationReason, void **
 }
 //----------------------------------------------------------------
 // Free all allocated data on filter destruction
-static void VS_CC blurFree(void *instanceData, VSCore *core, const VSAPI *vsapi) 
+static void VS_CC f2qblurFree(void *instanceData, VSCore *core, const VSAPI *vsapi) 
 {
-    BlurData *d = (BlurData *)instanceData;
+    F2QBlurData *d = (F2QBlurData *)instanceData;
 	if (d->FreqFilterUV != d->FreqFilter)
 		d->fftwf_free(d->FreqFilterUV);
 	d->fftwf_free(d->FreqFilter);
@@ -387,10 +387,10 @@ static void VS_CC blurFree(void *instanceData, VSCore *core, const VSAPI *vsapi)
 
 
 // This function is responsible for validating arguments and creating a new filter
-static void VS_CC blurCreate(const VSMap *in, VSMap *out, void *userData, VSCore *core, const VSAPI *vsapi) 
+static void VS_CC f2qblurCreate(const VSMap *in, VSMap *out, void *userData, VSCore *core, const VSAPI *vsapi) 
 {
-    BlurData d;
-    BlurData *data;
+    F2QBlurData d;
+    F2QBlurData *data;
     int err;
 	int temp;
     // Get a clip reference from the input arguments. This must be freed later.
@@ -401,19 +401,19 @@ static void VS_CC blurCreate(const VSMap *in, VSMap *out, void *userData, VSCore
     // vi->format can be 0 if the input clip can change format midstream.
     if (!isConstantFormat(d.vi)  )
 	{
-        vsapi->setError(out, "fqBlur: clip must have constant dimensions and in YUV or RGB or Grey format  ");
+        vsapi->setError(out, "F2QBlur: clip must have constant dimensions and in YUV or RGB or Grey format  ");
         vsapi->freeNode(d.node);
         return;
     }
 	if (d.vi->format->colorFamily != cmRGB && d.vi->format->colorFamily != cmYUV && d.vi->format->colorFamily != cmGray)
 	{
-		vsapi->setError(out, "fqBlur: RGB, YUV and Gray color formats only for input allowed ");
+		vsapi->setError(out, "F2QBlur: RGB, YUV and Gray color formats only for input allowed ");
 		vsapi->freeNode(d.node);
 		return;
 	}
 	if (d.vi->format->sampleType == stFloat && d.vi->format->bitsPerSample == 16)
 	{
-		vsapi->setError(out, "fqBlur: Half float formats not allowed ");
+		vsapi->setError(out, "F2QBlur: Half float formats not allowed ");
 		vsapi->freeNode(d.node);
 		return;
 	}
@@ -424,7 +424,7 @@ static void VS_CC blurCreate(const VSMap *in, VSMap *out, void *userData, VSCore
     // strict checking because of what we wrote in the argument string, the only
     // reason this could fail is when the value wasn't set by the user.
     // And when it's not set we want it to default to enabled.
-    temp = !!vsapi->propGetInt(in, "line", 0, &err);
+    temp = !!int64ToIntS(vsapi->propGetInt(in, "line", 0, &err));
     if (err)
 	{
         d.line = true;
@@ -433,7 +433,7 @@ static void VS_CC blurCreate(const VSMap *in, VSMap *out, void *userData, VSCore
     // Let's pretend the only allowed values are 1 or 0...
 		if (temp < 0 || temp > 1)
 	{
-		vsapi->setError(out, "fqBlur: line must be 0 (for circular blur) 1(for linear blur) ");
+		vsapi->setError(out, "F2QBlur: line must be 0 (for circular blur) 1(for linear blur) ");
 		vsapi->freeNode(d.node);
 		return;
 	}
@@ -446,7 +446,7 @@ static void VS_CC blurCreate(const VSMap *in, VSMap *out, void *userData, VSCore
 	}
 	
 
-	d.xcoord = vsapi->propGetInt(in, "x", 0, &err);
+	d.xcoord = int64ToIntS(vsapi->propGetInt(in, "x", 0, &err));
     if (err)
 	{
         d.xcoord = 2;
@@ -455,12 +455,12 @@ static void VS_CC blurCreate(const VSMap *in, VSMap *out, void *userData, VSCore
     //  the only allowed values are 
 		if ( (d.line && d.xcoord < 0) || d.xcoord > d.vi->width / 8 || ( !d.line && d.xcoord < 1))
 	{
-		vsapi->setError(out, "fqBlur: x coordinate can have a value from 0 for line and 1 for circular blur to 1/8th frame width only ");
+		vsapi->setError(out, "F2QBlur: x coordinate can have a value from 0 for line and 1 for circular blur to 1/8th frame width only ");
 		vsapi->freeNode(d.node);
 		return;
 	}
 
-	d.ycoord = vsapi->propGetInt(in, "y", 0, &err);
+	d.ycoord = int64ToIntS(vsapi->propGetInt(in, "y", 0, &err));
     if (err)
 	{
         d.ycoord = 2;
@@ -469,20 +469,20 @@ static void VS_CC blurCreate(const VSMap *in, VSMap *out, void *userData, VSCore
     //  the only allowed values are 
 		if ( d.ycoord <  - d.vi->height / 8 ||  d.ycoord  > d.vi->height / 8)
 	{
-		vsapi->setError(out, "fqBlur: y coordinate can have a value between plus and minus 1/8th frame height only ");
+		vsapi->setError(out, "F2QBlur: y coordinate can have a value between plus and minus 1/8th frame height only ");
 		vsapi->freeNode(d.node);
 		return;
 	}
 	if ( d.xcoord == 0 && d.ycoord == 0)
 	{
-		vsapi->setError(out, "fqBlur: both x and y coordinate must not be zeroes ");
+		vsapi->setError(out, "F2QBlur: both x and y coordinate must not be zeroes ");
 		vsapi->freeNode(d.node);
 		return;
 	}
 
     // I usually keep the filter data struct on the stack and don't allocate it
     // until all the input validation is done.
-    data = (BlurData*)malloc(sizeof(d));
+    data = (F2QBlurData*)malloc(sizeof(d));
     *data = d;
 
     // Creates a new filter and returns a reference to it. Always pass on the in and out
@@ -500,7 +500,7 @@ static void VS_CC blurCreate(const VSMap *in, VSMap *out, void *userData, VSCore
     // If your filter is really fast (such as a filter that only resorts frames) you should set the
     // nfNoCache flag to make the caching work smoother.
 
-    vsapi->createFilter(in, out, "fqBlur", blurInit, blurGetFrame, blurFree, fmParallelRequests, 0, data, core);
+    vsapi->createFilter(in, out, "F2QBlur", f2qblurInit, f2qblurGetFrame, f2qblurFree, fmParallelRequests, 0, data, core);
 
 }
 /*

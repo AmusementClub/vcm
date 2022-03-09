@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>F2QCorr</h2></font>
+	
+	 
+	
+	<BR>Script call for filter F2QCorr is:-
+	 <BR><BR><font color="#993366"><h2>vcm.F2QCorr(clip,bclip clip,[ int cx = 20[,int cy = cx] [,int txt = 0][,data filename] ] )</h2></font><BR><BR>
+	 <BR><font color="#ff00ff">clip:</font> YUV, GRAY, RGB24 constant formats only allowed.
+	 <BR><font color="#ff00ff">bclip:</font> must have identical format to that of clip and should be of equal length.
+	 <BR><font color="#ff00ff">cx:, cy:</font>search window half width.and height will search for correlation maximum in this frame centered window with left top at (-cx, -cy) and right bottom at (cx,cy).
+	 <BR><font color="#ff00ff">txt:</font> if set to 1, outputs coordinates of maximum correlation to a file in text format .
+	 <BR><font color="#ff00ff">filename:</font> if txt is set to 1, a valid file name with full path must be given.
+	 
+	 <P>Cross Correlates  frames of two input clips A and B in 2D Freq domain. The orrelation is displayed in space domain as the output frame. If txt is set to 1, a valid filename with full path must be given. Limiting up to the first 1000 frames, it measures the shift between the corresponding frames of the two clips within a window of plus minus cx and cy at center of frame. Frame numbers Fn, x, y values of shifts determined within this window and fx and fy values of shift within fullframe  are recorded in a text file at the end of all processing and closing of script. Normally  these values should be identical but in certain repeating patterned clips clips they can be different.</P>
+	 <P> This transforms data into frequency domain utilising  libfftw3f-3.dll ( or, FFTW3 dll, or fftw.dll) of fftw.org
+	    being available in path.</P>
+		</BODY>
+		</html>

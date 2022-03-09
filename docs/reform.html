@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Reform </h2></font>
+	
+	 <BR>The script calls are  :
+	 <BR><font color="#993366"><h2>vcm.Reform
+	  
+	 (clip, clip bkg[, int intq = 2][,int norm = 1][,float rect =[x0= left top x, y0= left top y, x2= right bottom x,y2= right bottom y] ],float quad[x0,y0,x1,y1.x2,y2,x3,y3][, int q2r = 0])</h2></font><BR>
+	 <BR><font color="#ff00ff">clip:</font>input clip. quadrilateral and rectangle transform is on this clip. YUV, RGB and GRAY constant formats. 
+	<BR><font color="#ff00ff">bkg:</font>background clip of identical format of input clip.
+	<BR><font color="#ff00ff">intq:</font> interpolation type. 0 for point, 1 bilinear 2x2, 2 bicubic 4x4 and 3 Lanczos 6X6	
+	 <BR><font color="#ff00ff">norm:</font> 0. for real and 1 for normalized values specified for coordinates.
+	 <BR><font color="#ff00ff">rect:</font> x and y coordinates of opposite corners of rectangle. 
+	 <BR><font color="#ff00ff">quad:</font> quadrilateral x, y coordinates in clock wise starting that will transform to or from rectangle.
+	 <BR><font color="#ff00ff">q2r:</font> 0 for rect to quad and 1 for quad to rect transform.
+	 </BODY>
+	 </html>

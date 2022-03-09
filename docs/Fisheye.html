@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Fisheye</h2></font>
+	  
+	<BR> 
+	
+	<BR>	the script call for Fisheye is
+	 <BR><BR><font color="#993366"><h2>vcm.Fisheye(clip[, int method = 3 ][, int xo = frame width / 2][,int yo = frame height / 2][, int frad = half of smaller of width and height][,int sqr = 1][,float rix = 1.2][,float fov = 120.0 ][,int q = 1][,int test = 0][,float dim = 0.25][, int dots = 2])</h2></font><BR><BR>
+	 <BR><font color="#ff00ff">clip:</font> input clip RGB,  YUV444 or GRAY constant format.A plane if present is ignored.(may get rubbish)
+	 
+	 <BR><font color="#ff00ff">method</font>  1 to 5.  1. orthoganal, 2.linear , 3.equisolid 4.panoramic and 5 radial .
+	 <BR><font color="#ff00ff">sqr:</font> If not zero, the fisheye image if fully within input frame, the corrected image is fitted in superscribing square.
+	 <BR><font color="#ff00ff">xo:</font>X center coordinate of fish eye image.can be out of frame 
+	 <BR><font color="#ff00ff">yo:</font>Y center coordinate of fish eye image. can be out of frame
+	 <BR><font color="#ff00ff">frad:</font> Radius of fish Eye image. Minimum 64. Make sure that at least part of  fisheye image is in the input frame. 
+	 <BR><font color="#ff00ff">rix:</font> Similar to refractive index. value be in range of 1.0 to 1.5.
+	 <BR><font color="#ff00ff">fov:</font> field of view. 40 to 170 degrees.
+	<BR><font color="#ff00ff">q:</font>	Type of interpolation. 1 to 4. 1. Manipal , 2. bilinear 2x2, 3. bicubic 4x4 and 4 lanczos 6X6. In test mode ignored.
+	<BR><font color="#ff00ff">test:</font> If set to 1 a pattern of dots on dimmed input showing the area which will be used for transforming. If zero normal processing is carried out.
+	<BR><font color="#ff00ff">dim:</font>  input is  dimmed by this factor to ensure the white dots are visible clearly on image. Used by test only.
+	<BR><font color="#ff00ff">dots:</font> 1 to 4. Density of dots per some arbitrary square area.Used by test only.	
+	 </P>
+	 <P> Imaging by pin hole camera is almost without any distortion. Due to various reasons cameras with lens are used. The images produced will have distortions due to overall geometry and refractive indicies. Terms Barrel, pin cushion and fish eye are generally used for describing the distortions. In test mode effect of parameters used can be visualized for  precise adjustments. The output frame size is changed suitably in methods 1 to 5 provided the Fish eye image is wholly within input frame. sqr works if the fisheye image is fully in input frame. As transforming fisheye image into normal image expands the size, usage of AddBorders may be required if part of fish eye image is outside input frame..  </P>
+	 <BR> Circles function is an useful tool to specify radius.
+		</BODY>
+		</html>

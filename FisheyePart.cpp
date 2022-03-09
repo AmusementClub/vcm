@@ -329,7 +329,7 @@ static const VSFrameRef* VS_CC fisheyepartGetFrame(int n, int activationReason, 
 								else
 									//bilinear 2x2 or cubic 4x4 or lanczos 6x6
 									*(dp + h * dpitch + w) = clamp(LaQuantile(sp + y * spitch + x, spitch, 
-										  qx, qy, d->span, d->iCoeff), min8, max8);
+										  d->span,qx, qy,  d->iCoeff), min8, max8);
 																	
 							}
 
@@ -340,7 +340,7 @@ static const VSFrameRef* VS_CC fisheyepartGetFrame(int n, int activationReason, 
 								else
 								
 									*((uint16_t*)dp + h * dpitch + w) = clamp(LaQuantile((uint16_t*)sp + y * spitch + x, spitch,
-										qx, qy, d->span, d->iCoeff), min16, max16);
+										 d->span,qx, qy, d->iCoeff), min16, max16);
 								
 							}
 
@@ -351,7 +351,7 @@ static const VSFrameRef* VS_CC fisheyepartGetFrame(int n, int activationReason, 
 								else
 								
 									*((float*)dp + h * dpitch + w) = clamp(LaQuantile((float*)sp + y * spitch + x, spitch,
-										qx, qy, d->span, d->iCoeff), minf, maxf);
+										d->span,qx, qy,  d->iCoeff), minf, maxf);
 								
 							}
 						}

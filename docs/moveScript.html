@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>example scripts for moving pixels</h2></font>
+example for interesting display using function Reform
+<PRE>
+import vapoursynth as vs
+import functools
+import math
+core = vs.get_core()
+core.std.LoadPlugin(path=r'c:\...........vcm.dll')
+ret = core.std.BlankClip(width=720,height=480,format = vs.YUV444P8,color=[255,127,127])
+ret=core.std.Trim(ret,1,1)
+ret  = core.vcm.Grid(ret,lineint=10, color=[55],bcolor=[0,55],vbcolor=[0,55,55],style =1)
+ret=core.text.Text(ret, text = "dancing grid", alignment=5)
+base = core.std.Loop (ret,1000)
+def req(n,clip):	
+	
+    t = 0.061 * n
+    t2 = 0.127 * n
+    sint= math.sin(t)
+    cost = math.cos(t)
+    sint2 = math.sin(t2)
+    cost2 = math.cos(t2)
+    a = 0.501 + 0.5 * math.sin(t/ math.pi)
+    t1x = (-0.2*cost2)     
+    t1y = (0.5-0.5*cost2)     
+    t2x = (1.0+0.2*cost2) 
+    t2y = (0.5-0.5*cost2) 
+    t3x = (1.0+0.2*cost2) 
+    t3y = (0.5+0.5*cost2) 
+    t4x = (-0.2*cost2) 
+    t4y = (0.5+0.5*cost2) 
+    c1x = (0.5+a*cost) 
+    c1y = (0.5+a*sint) 
+    c2x = (0.5-a*sint) 
+    c2y = (0.5+a*cost) 
+    c3x = (0.5-a*cost) 
+    c3y = (0.5-a*sint) 
+    c4x = (0.5+a*sint) 
+    c4y = (0.5-a*cost)
+    return core.vcm.Reform(clip,bkg = clip,norm = 1,rect=[t1x, t1y,t3x, t3y],quad=[c1x,c1y,c2x,c2y,c3x,c3y,c4x,c4y], intq = 0, q2r = 1) 
+ret = core.std.FrameEval(base,functools.partial(req,clip=base))
+</PRE>
+The following script can be used to test parameters for DeBarrel inplace of in built facility.
+<PRE>
+ret = core.std.BlankClip(width=720,height=480,format = vs.YUV444P8,color=[255,127,127])
+ret=core.std.Trim(ret,1,1)
+ret  = core.vcm.Grid(ret,lineint=10, color=[55],bcolor=[0,55],vbcolor=[0,55,55],style =1)
+ret = core.vcm.DeBarrel(ret,abc = [ 0.005, 0.005,0.005],pin = 0)
+ret = core.std.Loop (ret,50)
+
+def animator(n,clip):	
+	return core.vcm.DeBarrel(clip,abc = [0.001,0.02, n* 0.0002 + 0.0002 ],pin=1, test = 1)
+#
+dret = core.std.FrameEval(ret,functools.partial(animator,clip=ret)) 
+</PRE>
+</BODY>
+</html>

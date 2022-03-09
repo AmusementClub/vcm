@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>F2QBokeh </h2></font>
+	
+	<BR> The script call is:
+	<BR><font color="#993366"><h2>vcm.F2QBokeh(clip, clipb clip [, int grid = 16][ ,float thresh = 0.45][, int rgb = [1,1,1][, int yuv = [1,1,1])</h2></font>
+	<BR>
+	
+	<BR><font color="#ff00ff"><b>clip:</b></font> Input RGB, YUV444, and Gray except Compat and half float formats. RGB seems to give better results.
+	<BR><font color="#ff00ff"><b>clipb:</b></font> heavily blurred  version of input clip.
+	<BR><font color="#ff00ff"><b>grid:</b></font> side of rectangular moving grid used to find focus. Can be 3 to 64.
+	<BR><font color="#ff00ff"><b>thresh:</b></font> threshold to accept as in focus. Value above is treated as out of focus. Can have values from  0.0 to 1.0.
+	<BR><font color="#ff00ff"><b>rgb:</b></font> for rgb format input, planes to be considered for process. 1 for consider and 0 for skip.
+	<BR><font color="#ff00ff"><b>yuv:</b></font> for YUV format input, planes to be considered for process. 1 for consider and 0 for skip.
+	<p>
+	This function detects portions of input clip which are in good focus and copies them on to the heavily blurred clip. This creates image with accentuated 'Bokeh' effect. Borders are not processed. May crop them if desired. Function bokeh which works in spatial domain operates on a different princeple to determine focus/defocus areas.</p>
+	<p> Threshold and grid size has some dependancy. It is necessary to experiment with FrameEval for a good outcome. On a an image I used to test, the following combinations seemed to work. So they may be starting values for experimenting.</p>
+<pre>
+grid   	threshold
+  8		0.15
+ 16		0.45
+ 24		0.6
+ 32		0.75
+ 48 		0.8
+ 64 		0.85
+</pre> 
+	This function operates in frequency domain and requires libfftwf.dll to be in path. <BR><a href="freqScript.html">freqScript</a> page has a usage script.</P>
+	
+	</BODY>
+	</html>
+	

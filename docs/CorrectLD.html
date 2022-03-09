@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>CorrectLD</h2></font>
+	  
+	<BR> 
+	
+	<BR>	the script call for CorrectLD is
+	 <BR><BR><font color="#993366"><h2>vcm.CorrectLD(clip[, int method =4 ][, int xo = frame width / 2][,int yo = frame height / 2][, int fdia = greater of xo and yo][,float rix = 1.2][,float fk = 3.0 ][,int q = 1][,int test = 0][,float dim = 0.75][, int dots = 2])</h2></font><BR><BR>
+	 <BR><font color="#ff00ff">clip:</font> input clip RGB,  YUV444 or GRAY constant format. Red, green and blue of RGB or Y  plane of YUV format is processed.
+	 
+	 <BR><font color="#ff00ff">method</font> 1 for Barrel, 2 for PinCushion. 3 to 6 are for Fish eye correction 3. orthoganal, 4.linear , 5.equisolid and 6.panoramic output.7 to 10 are for producing fish eye view from 7. orthoganal, 8.linear , 9.equisolid and 10.panoramic image.
+	 <BR><font color="#ff00ff">xo:</font>X coordinate of fish eye image. Can be reasonably outside input frame.
+	 <BR><font color="#ff00ff">yo:</font>Y coordinate of fish eye image. Can be reasonably outside input frame.
+	 <BR><font color="#ff00ff">fdia:</font> Diameter of fish Eye image. Ensure that at least part of fish eye image is within input image area.
+	 <BR><font color="#ff00ff">rix:</font> Similar to refractive index. value be in range of 1.0 to 1.5.
+	 <BR><font color="#ff00ff">fk:</font> Positive real number. Most of time 2.0 to 3.5 works well.
+	<BR><font color="#ff00ff">q:</font>	Type of interpolation. 1 to 4. 1. Manipal IIT, 2. bilinear, 3. bicubic and 4 lanczos 6X6. In test mode ignored.
+	<BR><font color="#ff00ff">test:</font> If set to 0 a pattern of dots on dimmed input showing the area which will be used for transforming. If not zero normal processing is carried out.
+	<BR><font color="#ff00ff">dim:</font> factor of dimming. 0 is fully blackened and 1.0 is input is not dimmed. This is to ensure the white dots are visible clearly on image.
+	<BR><font color="#ff00ff">dots:</font> 1 to 5. Density of dots per some arbitrary square area.	
+	 </P>
+	 <P> Imaging by pin hole camera is almost without any distortion. Due to various reasons cameras with lens are used. The images produced will have distortions due to overall geometry and refractive indicies. Terms Barrel, pin cushion and fish eye are generally used for describing the distortions. Scheme in paper published in 2008 by Manipal dot net is followed. Additionally methods to create fish eye from ordinary images are also enabled in this plugin. In test mode effect of parameters used can be visualized for  precise adjustments. Internally fk is suitably scaled to be in similar range ( to avoid many leading zeroes) for all methods.   </P>
+		</BODY>
+		</html>

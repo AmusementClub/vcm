@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>F2QLimit</h2></font>
+	  
+	<BR>	the script call  is:-
+	 <BR><BR><font color="#993366"><h2>vcm.F2QLimit(clip,int fspec = [] [, int grid = 10][,int inner = grid / 10][,int warn = 1])</h2></font><BR><BR>
+	 
+	 <BR><font color="#ff00ff"> clip:</font> input clip must have constant dimensions and of RGB or YUV or Grey format only. All 3 planes of RGB, and YUV formats are processed. 
+	 <BR><font color="#ff00ff">fspec[]:</font> Array of x and y frequency value pairs for limiting.
+	 <BR><font color="#ff00ff">grid:</font> checks for max value within + grid and -grid square.value range 1 to 50
+	 <BR><font color="#ff00ff">inner:</font> limits values in a square of -inner to inner around maximum detected. value range 0 to grid
+	 <BR><font color="#ff00ff">warn:</font> 0 no warning, 1 if search includes origin warns, 2 if search includes any axis warns.
+	 <P> This transforms data into frequency domain utilising  libfftw3f-3.dll ( or, FFTW3 dll, or fftw.dll) of fftw.org
+	    being available in path. Searches for maximum value within (-grid to grid) around given coordinates and zeroes out the (-inner to inner) square</P>
+		</BODY>
+		</html>
+	 

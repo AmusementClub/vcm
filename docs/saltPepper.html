@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>SaltPepper </h2></font>
+		
+		<BR><BR>
+		<font color="#993366"><h2>vcm.SaltPepper(clip [,planes = [3,3,3]][,tol = 3][,avg= 1] )</h2></font><BR>
+		
+		
+		<BR><font color="#ff00ff">clip:</font> Input clip.
+		All formats except Compat accepted.
+		<BR><font color="#ff00ff">planes:</font> array of 3 values specifying type of process for that plane. The plane  set to 0 : no process, 1: Desalt, 2: DePepper, 3 : DeSalt and Depepper.All 3 should not be set to zero.
+		<BR><font color="#ff00ff">tol:</font> tolerance above or below surrounding pixels to accept. Max 5.
+		<BR><font color="#ff00ff">avg:</font> if salt or pepper found and if avg is set to 1, pixel value will be replaced by average of surrounding. If set to 0, nearest valid pixel value will be used.
+		<BR>This function removes impulsive noise on some images visible as white or black dots.
+		</BODY>
+	</html>

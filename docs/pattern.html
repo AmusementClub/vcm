@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+ <BR><font color="#cc0033"><h2>Pattern</h2></font>
+	  
+	
+	<BR>	the script call for Pattern is
+	 <BR><BR><font color="#993366"><h2>vcm.Pattern(clip[,int type = 4][,int x = frame width / 2] [,int y = frame height / 2][,int color = [255,255,255][,int rad = 80][, int spk = 0][, float spike = 0.1][,int orient = 1][, int stat = 1][,int wl = 16][, float overlay = 0.1])</h2></font><BR><BR>
+	 <BR> <font color="#ff00ff">clip:</font> constant format rgb or yuv input.For dirac use black blankclip 
+	 <BR> <font color="#ff00ff">type:</font> 1 dirac, 2 disc, 3 zcos (cos (d squared)), 4 sine 5 step
+	 <BR><font color="#ff00ff">x:, y:</font>  coordinates of origin of Pattern. can be outside frame for types 3, 4, 5.
+	 <BR><font color="#ff00ff">color:</font> in b,g, r format
+	 <BR><font color="#ff00ff">rad:</font> radius of circular disc for type 2
+	 <BR><font color="#ff00ff">spk:</font> if set to 1 disc center will have a spike
+	 <BR><font color="#ff00ff">spike:</font> value of spike. 0 to 1.0
+	 <BR><font color="#ff00ff">orient:</font> orientation of Pattern:- 1. circular, 2 vertical, 3 horizontal and 4 for slant. Applicable for for Pattern types 3,4 and 5 only.
+	 <BR><font color="#ff00ff">stat:</font> if set 0, Pattern moves from frame to frame.
+	 <BR><font color="#ff00ff">wl:</font> wave length of Pattern type  3, 4 and 5
+	 <BR><font color="#ff00ff">overlay:</font> proportion of Pattern overlay on input clip.
+	 <BR>
+	 </BODY>
+	 </html>

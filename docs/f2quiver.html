@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>F2Quiver</h2></font>
+	 
+	
+	 <BR> The call for this function is:-
+	
+	<BR><BR><font color="#993366"><h2>vcm.F2Quiver(clip[ , int frad = 32][,int test = 0][, int morph = 0][, float gamma = 0.05], int fspec = [spec1][,......] ] )</h2></font><BR><BR>
+	<BR><font color="#ff00ff">clip:</font> RGB or YUV or Gray constant format input. Green or Y component only processed.
+	<BR><font color="#ff00ff">frad:</font> radius of filter in space domain. It can vary from 16 to 1/4 of smaller frame dimension in steps of 4. Note that large frad increases time of processing.
+	<BR><font color="#ff00ff">morph:</font> set to one for homomorphic process.This mode during test improves display. For regular processing refer literature for need and filtering.
+	
+	<BR><font color="#ff00ff">test:</font> set to 1 for test mode
+	<BR><font color="#ff00ff">gamma:</font> from 0.0001 to 5.0. used if test is set to 1.
+	
+	<BR><font color="#ff00ff">fspec:</font> [ array of 1 to 12 integer sets, each set has 5 values(symmetry, type, freq1, freq2, degree). At least one set must be specified.
+	<BR>::<font color="#9900ff"> symmetry:</font> 1. circular, 2 Horizontal, 3.vertical, 4. Fan line through origin, 5. points in the spectrum. Note that in spectrum opposite quadrants are symetrical,
+	so defining in one automatically defines in the opposite quadrant. Depending on similarity, the parameter definition changes. 
+	<BR>::<font color="#9900ff"> Type:</font> 1 low cut (or high pass) 2. Hicut (or low freq pass) 3.band pass 4. band stop 5. notch. For point symmetry only notch is designed. 
+	<BR>::<font color="#9900ff"> freq1:</font> freq of cut or notch, or low freq of pass or stop, or angle1 in degrees (0 to 89, 91 to 179)of fan. X freq coordinate of point. Freq values are positive in range 0 to 255, NYQUIST being 512.  
+	<BR>::<font color="#9900ff"> freq2:</font> higher freq of band or angle 2 of fan spread. Angle 2 should  be more than angle1.(angle2 and angle1 both must be either between 1 to 89 degrees or 91 to 179 degree range.)  Some value must be specified even if not applicable. freq2 value of 2 to 255, or for point Y freq coord of -255 to 255
+	<BR>::<font color="#9900ff"> degree:</font> degree of sharpness of filter. 1 to 24. If set to 1 ,  gaussian, otherwise butterworth filters are designed.
+	<P>This function does a 2D transform of each frame, applies designed filter and inverse transforms for output. Upto 12 Butterworth or Gauss 2D filters can be specified. These are cascaded and applied. To enable determining frequencies and symmetries test facility is provided. In test mode the frequency spectrum and designed filters
+		are displayed. In the 2d frequency spectrum, one may notice symmetries  of image elements and 
+		noise. Homomorphic filtering is an option. The filter radius frad specifiess filter radius in image (spatial) domain. Required padding to eliminate wrap aound effect is
+			done.</P>
+			<P> This transforms data into frequency domain. The freq domain filter functions require <a href="http://www.avisynth.nl/users/vcmohan/libfftw3f-3.zip"> FFTw3f 32 bit dll</a> or for 64 bit <a href="<a href="http://www.avisynth.nl/users/vcmohan/libfftw3f-3_64bit.zip">FFTw3f 64</a> bit dll, of fftw.org
+	    being available in path.</P>
+		</BODY>
+		</html>

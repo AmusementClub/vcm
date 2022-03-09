@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>F1Quiver</h2></font>
+	  
+	<BR> 
+	
+	<BR>	the script call for F1Quiver is
+	 <BR><BR><font color="#993366"><h2>vcm.F1Quiver(clip, int filter[ .... ][, int morph = 0][,int custom = 0][,int test = 0][,int strow = 0] [, int nrows = height / 2][,float gamma = 0.05] )</h2></font><BR><BR>
+	 <BR><font color="#ff00ff">clip:</font> input clip RGB,  YUV or GRAY constant format. Green of RGB or Y color plane is processed.
+	 <BR><font color="#ff00ff">filter:</font>Each Butterworth filter is specified as four integers  corresponding to {type, freq1, freq2, degree} where
+	 <BR>:: <font color="#9900ff">type</font>  1 for low pass, 2 for high pass, 3 for band pass and 4 for band reject 
+	 <BR>:: <font color="#9900ff">freq1</font> Frequency of low pass  or high pass or lower freq of band pass or reject. 
+	 <BR>::<font color="#9900ff">freq2</font> Higher freq in case of band pass or reject. Other types will not  use this value, but must be specified. This value must not be less than freq1 value.
+	 <BR>::<font color="#9900ff">degree </font> degree of sharpness of filter. 1 to 12
+	 <BR><font color="#ff00ff">custom:</font>If custom is set, then filter specs are pairs of integer values of freq  and, %response. Freq should monotonously increase.
+	
+	<BR><font color="#ff00ff"> morph:</font> if set does homomorphic transform. Specify appropriate filters(ref literature). Incidentally this option in test mode shows up low amplitude values better.
+	<BR><font color="#ff00ff"> test:</font> if set to 1, displays nrows averaged freq spectra with gamma correction in top left panel and uncorrected below it. The ruler is to read freq values, to specify filter specs. The designed filter is also shown in top panel.  On the right half  filtered output in top half and raw input in bottom half are displayed. 
+	<BR><font color="#ff00ff"> strow:, nrows:</font> used if test is set 1. starting from strow nrows freq spectra are averaged for display. strow + nrows must be within frame.
+	<BR><font color="#ff00ff">gamma:</font> used if test is set to 1. gamma can be between 0.00001 and 1.0. Used to display low values of freq spectra clearly.
+	<P> This function operates on image row by row. Certain types of regular repetitive noise such as power line frequency hum 
+	interference can be attenuated. The test mode displays 1D frequency spectrum averaged over nrows. It also displays filter which is designed. A ruler 
+	to find exact frequency is provided. The ruler marks are 100s and 20s or 100s, 50s and 10s  depending on legibility
+	consideration judged internally.
+	Butterworth low pass, high pass, band pass, band reject 
+	filters of appropriate frequencies can be specified. Up to 16 filters can be cascaded. Each filter requires 4 values. Alternatively a custom designed filter can be used.
+	In which case two values per point and upto 32 points of (freq, %response) are required to be specified. At least one filter must be specified.	
+	 </P>
+	 <P> This transforms data into frequency domain utilising  libfftw3f-3.dll ( or, FFTW3 dll, or fftw.dll) of fftw.org
+	    being available in path.</P>
+		</BODY>
+		</html>

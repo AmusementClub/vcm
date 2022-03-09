@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Variance </h2></font>
+	
+	<BR>The call script is :-
+	<BR><BR><font color="#993366"><h2>vcm.Variance(clip,int lx,int wd,int ty,int ht [,int fn = 0][,int uv = 0][,int xgrid = 5][,int ygrid = 5])</h2></font>
+	<BR><font color="#ff00ff">clip:</font> input clip of constant format. Compat input not accepted.
+	<BR><font color="#ff00ff">lx:</font> Left x coordinate of window<BR><font color="#ff00ff">wd:</font> width of window<BR><font color="#ff00ff">ty:</font> top y coordinate of window<BR><font color="#ff00ff">ht:</font> height of window
+	<BR><font color="#ff00ff">fn:</font> frame number in which window is located.
+	<BR><font color="#ff00ff">uv:</font> If set 0 u and v planes of YUV format not processed.
+	<BR><font color="#ff00ff">xgrid:</font> grid size along width. Minimum 3. Maximum should not exceed half of frame width, but be reasonably small.
+	<BR><font color="#ff00ff">ygrid:</font> grid size along height. Minimum 3. Maximum should not exceed half of frame height, but reasonably smaller.
+	<P>From the specified representative window, the global Variance is determined. In a moving grid the local Variance is determined and 
+	the center of the grid point is modified in relation to these two Variances. The algorithm ensures that local edges are not destroyed.
+	Repeated use of this function cleans image and may be used for very noisy clips.
+	 For RGB all 3 planes are processed.  The window should be as large as possible
+	but have near uniform luma for YUV or Gray formats or uniform color and intensity  for RGB format</P>
+	</BODY>
+	</html>
+	

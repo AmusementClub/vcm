@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Circles</h2></font>
+	  
+	<BR> 
+	
+	<BR>	the script call for Circles is
+	 <BR><BR><font color="#993366"><h2>vcm.Circles(clip[, int xo = frame width / 2][,int yo = frame height / 2][, int fdia = greater of xo and yo][,float dim = 0.75][, int dots = 2][, int cint = 50][, int rgb=[255,255,255])</h2></font><BR><BR>
+	 <BR><font color="#ff00ff">clip:</font> input clip RGB,  YUV or GRAY constant format. 
+	 
+	 <BR><font color="#ff00ff">xo:</font>X coordinate of fish eye image. Can be reasonably outside input frame.
+	 <BR><font color="#ff00ff">yo:</font>Y coordinate of fish eye image. Can be reasonably outside input frame.
+	 <BR><font color="#ff00ff">fdia:</font> Diameter to be specially marked
+	 
+	<BR><font color="#ff00ff">dim:</font> factor of dimming. 0 is fully blackened and 1.0 is input is not dimmed. This is to ensure the white dots are visible clearly on image.
+	<BR><font color="#ff00ff">dots:</font> 1 to 5. Density of dots per some arbitrary square area.
+	<BR><font color="#ff00ff">cint:</font> Interval between circles. 10 to higher fitting circle
+	<BR><font color="#ff00ff">rgb:</font> color of dots as 8bit red, green, blue array.	
+	 </P>
+	 <P> concentric circles are drawn on image. Specified diameter is highlighted.   </P>
+		</BODY>
+		</html>

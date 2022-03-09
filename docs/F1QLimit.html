@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>F1QLimit</h2></font>
+	  
+	<BR> 
+	
+	<BR>	the script call for F1QLimit is
+	 <BR><BR><font color="#993366"><h2>vcm.F1QLimit(clip, int freqs =[] [, int span = 15][,int limit = 50])</h2></font><BR><BR>
+	 <BR><font color="#ff00ff">clip:</font> input clip RGB,  YUV or GRAY constant format. Red, green and blue of RGB or Y  plane oy YUV format is processed.
+	 
+	 <BR><font color="#ff00ff">freqs</font> estimated frequency values for limiting. Upto ten values 
+								can be specified. NYQUIST freq is defined as 512. freqs values must 
+								be clear of (zero +) span and less than NYQUIST - span.
+	 <BR><font color="#ff00ff">span:</font>checks around each freqs in this range to get max value and limits it.Span can be any odd number between 5 to 1/8 Nyquist.
+	 <BR><font color="#ff00ff">limit:</font>the detected maximum value is limited to this %age. 0 ( full reduction) to 99 are valid values.
+	 
+	 </P>
+	 <P> This transforms data into frequency domain utilising  libfftw3f-3.dll ( or, FFTW3 dll, or fftw.dll) of fftw.org
+	    being available in path.  It should be kept in mind that most of the image frequency values will be near around 0. Caution must be excercised in specifying freqs and span to ensure that search will be well away from zero. This function finds maximum around the specified values of freqs and limits it.  Regular noise of vertical or sub vertical orientation are removed by this function. If noise is near Horizontal, Transpose function may be used before and after. Check for values to be used by running F1Quiver with test = 1 prior ( and after to confirm). </P>
+		</BODY>
+		</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Jitter</h2></font>
+	 <BR> The call for this function is:-
+	
+	<BR><BR><font color="#993366"><h2>vcm.Jitter(clip[ , int type = 1][,int jmax = frame width / 16][, data dense = "med"][, int wl = frame height / 8][, int stat = 0][, data speed = "med"] )</h2></font><BR><BR>
+	<BR> <font color="#ff00ff">clip:</font> Constant format RGB or YUV or Grey input with no subsampling.
+	<BR> <font color="#ff00ff">type:</font> 1 for random and 2 for sinusoidal Jitter
+	<BR><font color="#ff00ff">jmax:</font> max amplitude of Jitter 
+	<BR><font color="#ff00ff">dense:</font> how frequent (number of rows) Jitter is present. "low", "med", "high"
+	<BR><font color="#ff00ff">wl:</font> in type 2 wave length of sinusoid
+	<BR><font color="#ff00ff">stat:</font> 1 for Jitter will be constant and 0 for move from frame to frame.
+	<BR><font color="#ff00ff">speed:</font> if stat is set 0 then speed at which moves. "low', "med" and "high"
+	<BR>
+	This function was developed on request from academia and is useful for testing deJitter function.
+	</BODY>
+	</html>

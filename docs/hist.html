@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>vcm vapoursynth Plugin</title>
+</head>
+
+<BODY>
+<font color="#c000cc"><h1><center>vcm </center></h1></font>
+<BR><font color="#cc0033"><h2>Hist</h2></font><BR>
+	 	 <BR> The function call is:-
+	<BR><BR><font color="#993366"><h2>vcm.Hist(clip [, clip clipm, int mf = 0][,int type=1][,int table=[int,int,.....] ][ ,int window = 0][,int limit = 0] )</h2></font><BR>
+	<BR><font color="#ff00ff">clip:</font> YUV or Gray format only.
+	<BR><font color="#ff00ff">clipm:</font> frame on this clip to be matched with. Must specify if type = 2.
+	<BR><font color="#ff00ff">mf:</font> Frame number of clipm to be used for matching.
+	<BR><font color="#ff00ff">type:</font> 1. Equalization, 2.Match with frame fm of clipm, 3. Match with given table of luma %age, and population %age values and 4. match with a table of luma %age and cummulative population %age.
+	<BR><font color="#ff00ff">table:</font> If type = 3, array of pairs of integer values giving Luma as %age  and %age of occurance.Luma should be in ascending order. If type = 4, Luma as %age and cummulative population as %age. Luma and cummulative %age should increase monotonously 0 to 100. Minimum 2 pairs and maximum 20 pairs can be specified.
+	
+	<BR><font color="#ff00ff">window:</font> 0. for full frame and 1 for windowed processing. If the frame dimensions are not large enough for windowed process, reverts to full frame process.
+	<BR><font color="#ff00ff">limit:</font>	if set to 0, No limit to change.Otherwise %age change in value to be allowed.
+	<P>Hist works with Histogram and can equalize whole frame or with moving window (slow) or match entire clip with a given frame
+	 or match with specified Histogram. Equalization may be severe for certain inputs, so use parameter limit.  </P>
+	</BODY>
+	</html>
+	
