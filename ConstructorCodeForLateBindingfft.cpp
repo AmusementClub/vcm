@@ -1,4 +1,5 @@
 
+#ifndef STATIC_FFTW3
 // late binding
 
 bool ok = true;
@@ -65,3 +66,23 @@ d->fftwf_init_threads();
 
 d->fftwf_plan_with_nthreads(nThreadMult * numCPU);
 */
+#else // STATIC_FFTW3
+	d->hinstLib = NULL;
+
+	d->fftwf_free = (fftwf_free_proc)fftwf_free;
+	d->fftwf_malloc = (fftwf_malloc_proc)fftwf_malloc;
+	// for 1d fft
+	d->fftwf_plan_dft_r2c_1d = (fftwf_plan_dft_r2c_1d_proc)fftwf_plan_dft_r2c_1d;
+	d->fftwf_plan_dft_c2r_1d = (fftwf_plan_dft_c2r_1d_proc)fftwf_plan_dft_c2r_1d;
+	// for 2d fft
+	d->fftwf_plan_dft_r2c_2d = (fftwf_plan_dft_r2c_2d_proc)fftwf_plan_dft_r2c_2d;
+	d->fftwf_plan_dft_c2r_2d = (fftwf_plan_dft_c2r_2d_proc)fftwf_plan_dft_c2r_2d;
+
+	d->fftwf_destroy_plan = (fftwf_destroy_plan_proc)fftwf_destroy_plan;
+	d->fftwf_execute = (fftwf_execute_proc)fftwf_execute;
+
+	d->fftwf_execute_dft_r2c = (fftwf_execute_dft_r2c_proc)fftwf_execute_dft_r2c;
+	d->fftwf_execute_dft_c2r = (fftwf_execute_dft_c2r_proc)fftwf_execute_dft_c2r;
+
+	bool ok = true;
+#endif
