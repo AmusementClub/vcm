@@ -10,23 +10,43 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch:
-          - amd64
-          - x86
+        arch: [amd64, x86]
+        include:
+          - arch: x86
+            platform: x86
+          - arch: amd64
+            platform: x64
     steps:
       - uses: actions/checkout@v2
       - name: setup MS dev commands
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
+
+      - name: Cache fftw3
+        id: cache-fftw3
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/vcpkg/installed/
+          key:  ${{ runner.os }}-${{ matrix.arch }}-fftw3-v3
+      - name: Run vcpkg
+        uses: lukka/run-vcpkg@v4
+        if: steps.cache-fftw3.outputs.cache-hit != 'true'
+        with:
+          vcpkgArguments: 'fftw3[avx2]:${{ matrix.platform }}-windows-static'
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgGitCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092 # 2021.05.12 release
+
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
           python-version: '3.x'
       - name: install meson and ninja
         run: pip install meson ninja
+      - name: Install pkg-config lite
+        run: choco install pkgconfiglite
       - name: Meson setup
-        run: meson setup builddir/ -Db_vscrt=mt
+        run: meson setup builddir/ -Db_vscrt=mt -Dpkg_config_path=${{ github.workspace }}/vcpkg/installed/${{ matrix.platform }}-windows-static/lib/pkgconfig
       - name: Meson compile
         run: meson compile -C builddir/ -v
       - name: Build release
