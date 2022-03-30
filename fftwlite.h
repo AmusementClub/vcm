@@ -5,8 +5,13 @@
 #ifndef __FFTWLITE_H__
 #define __FFTWLITE_H__
 
+#ifndef STATIC_FFTW3
 typedef float fftwf_complex[2];
 typedef struct fftwf_plan_s  *fftwf_plan;
+#else
+#include <fftw3.h>
+#endif
+
 typedef fftwf_complex* (*fftwf_malloc_proc)(size_t n); 
 
 typedef void (*fftwf_free_proc) (void *ptr);
@@ -33,7 +38,9 @@ typedef void (*fftwf_plan_with_nthreads_proc) (int nthreads);
 typedef void (*fftwf_cleanup_threads_proc)(void);
 typedef void (*fftwf_cleanup_proc)(void);
 
+#ifndef STATIC_FFTW3
 #define FFTW_MEASURE (0U)
 #define FFTW_ESTIMATE (1U << 6)
 #define FFTW_DESTROY_INPUT (1U << 0)
+#endif
 #endif
