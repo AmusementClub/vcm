@@ -113,7 +113,7 @@ void SegmentSmooth(finc * dstr, int dspitch,
 		{
 			int count = smf;
 
-			float sum = buff[ w ] * smf;
+			float sum = (float)(buff[ w ] * smf);
 
 			int basin = tagg[ w] ;
 
@@ -146,7 +146,7 @@ void SegmentSmooth(finc * dstr, int dspitch,
 				}
 			}
 					
-			dstr [w ] = sum / count;
+			dstr [w ] = (finc)(sum / count);
 		}
 
 		dstr += dspitch;
@@ -168,9 +168,9 @@ void SegmentSharp( finc * dstr, int dspitch, const finc * frp, int frpitch,
 		{	
 			if(wsh[ w ] == 0)		// yes this is a edge
 			{
-				float val = (frp[w] * ( 100 + sh))/100.0 ;
+				float val = (float)((frp[w] * ( 100 + sh))/100.0) ;
 
-				dstr [w] = val  > max ? max : val < min ? min : val;
+				dstr [w] = (finc)(val  > max ? max : val < min ? min : val);
 			}
 		}
 
@@ -401,7 +401,7 @@ static const VSFrameRef *VS_CC amplitudeGetFrame(int n, int activationReason, vo
 						const float ** pixelsort = (const float **) pixelsort8;
 						float * buf = ( float *) buf8; 
 						const float * s2p = ( float *)s2ptr;
-						float min = plane == 0 || fi->colorFamily == cmRGB ? 0.0 : -0.5f;
+						float min = plane == 0 || fi->colorFamily == cmRGB ? 0.0f : -0.5f;
 						float max = plane == 0 || fi->colorFamily == cmRGB ? 1.0f :  0.5f;
 					// uses appropriate frame as d->sclip points to that clip frame
 						preSegmentProcess(buf, wd, s2p , pitch, wd, ht,  pixelsort);
@@ -463,8 +463,20 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
     // Get a clip reference from the input arguments. This must be freed later.
     d.node[0] = vsapi->propGetNode(in, "clip", 0, 0);
     d.vi[0] = vsapi->getVideoInfo(d.node[0]);
+	if (d.vi[0]->format->colorFamily != cmRGB && d.vi[0]->format->colorFamily != cmYUV && d.vi[0]->format->colorFamily != cmGray)
+	{
+		vsapi->setError(out, "Amp: RGB, YUV and Gray color formats only for input allowed ");
+		vsapi->freeNode(d.node[0]);
+		return;
+	}
+	if (d.vi[0]->format->sampleType == stFloat && d.vi[0]->format->bitsPerSample == 16)
+	{
+		vsapi->setError(out, "Amp: Half float formats not allowed ");
+		vsapi->freeNode(d.node[0]);
+		return;
+	}
 
-	temp = vsapi->propGetInt(in, "connect4", 0, &err);
+	temp = !!int64ToIntS(vsapi->propGetInt(in, "connect4", 0, &err));
 
 	if(err)
 		d.connect4 = true;
@@ -472,7 +484,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 	{
 		if ( temp < 0 || temp > 1)
 		{
-			vsapi->setError(out, "amp: connect4 must  be 0  to use 8 connect or 1 for  4 connect");
+			vsapi->setError(out, "Amp: connect4 must  be 0  to use 8 connect or 1 for  4 connect");
 			vsapi->freeNode(d.node[0]);			
 			return;
 		}
@@ -482,7 +494,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 	temp = vsapi->propNumElements(in,"sh");
 	if ( temp == 0 || temp > 3)
 	{
-			vsapi->setError(out, "amp: sh array must specify not more than 3 and at least first of 3 values corresponding to 3 planes");
+			vsapi->setError(out, "Amp: sh array must specify not more than 3 and at least first of 3 values corresponding to 3 planes");
 			vsapi->freeNode(d.node[0]);			
 			return;
 	}
@@ -491,7 +503,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 		
 		for (int i = 0; i < temp; i++)
 		{
-			d.sh[i] = vsapi->propGetInt(out, "sh", i, 0);
+			d.sh[i] = int64ToIntS(vsapi->propGetInt(out, "sh", i, 0));
 			
 		}
 		for (int i = temp; i < 3; i++)
@@ -503,7 +515,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 		{
 			if(d.sh[i] < -5 || d.sh[i] > 5)
 			{
-				vsapi->setError(out, "amp: sh values must be between - 5 and 5. If 0 no sharpening will be done");
+				vsapi->setError(out, "Amp: sh values must be between - 5 and 5. If 0 no sharpening will be done");
 				vsapi->freeNode(d.node[0]);
 				return;
 			}
@@ -514,7 +526,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 	temp = vsapi->propNumElements(in,"sm");
 	if (temp == 0 || temp > 3)
 	{
-		vsapi->setError(out, "amp: sm array must specify not more than 3 and at least first of 3 values corresponding to 3 planes");
+		vsapi->setError(out, "Amp: sm array must specify not more than 3 and at least first of 3 values corresponding to 3 planes");
 		vsapi->freeNode(d.node[0]);
 		return;
 	}
@@ -522,7 +534,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 	{
 		for (int i = 0; i < temp; i++)
 		{
-			d.sm[i] = vsapi->propGetInt(out, "sm", i, 0);
+			d.sm[i] = int64ToIntS(vsapi->propGetInt(out, "sm", i, 0));
 
 		}
 		for (int i = temp; i < 3; i++)
@@ -534,7 +546,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 		{
 			if (d.sm[i] < 0 || d.sm[i] > 10)
 			{
-				vsapi->setError(out, "amp: sm values must be between 0 and 5. If 0 no smoothening will be done");
+				vsapi->setError(out, "Amp: sm values must be between 0 and 5. If 0 no smoothening will be done");
 				vsapi->freeNode(d.node[0]);
 				return;
 			}
@@ -550,13 +562,13 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 
 	if( temp == 0)
 	{
-		vsapi->setError(out, "amp: all sh and sm values are zero so no processing is opted");
+		vsapi->setError(out, "Amp: all sh and sm values are zero so no processing is opted");
 		vsapi->freeNode(d.node[0]);			
 		return;
 	}
 
 
-	temp = !! vsapi->propGetInt(in, "useclip",0,&err);
+	temp = !!int64ToIntS(vsapi->propGetInt(in, "useclip",0,&err));
 	if(err)
 
 		d.sclip = false;
@@ -573,7 +585,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 
 		if(err)
 		{
-			vsapi->setError(out, "amp: sclip must be specified for useclip option");
+			vsapi->setError(out, "Amp: sclip must be specified for useclip option");
 			vsapi->freeNode(d.node[0]);
 			return;
 		}
@@ -582,7 +594,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 
 		if (!isConstantFormat(d.vi[0]) || !isSameFormat(d.vi[0], d.vi[1]) || d.vi[0]->numFrames != d.vi[1]->numFrames )
 		{
-			vsapi->setError(out, "amp: for use clip option both clips must have constant and identical formats and same number of frames");
+			vsapi->setError(out, "Amp: for use clip option both clips must have constant and identical formats and same number of frames");
 			vsapi->freeNode(d.node[0]);
 			vsapi->freeNode( d.node[1]);
 			return;
@@ -618,7 +630,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
     // prefetch (such as a cache filter).
     // If your filter is really fast (such as a filter that only resorts frames) you should set the
     // nfNoCache flag to make the caching work smoother.
-    vsapi->createFilter(in, out, "amp", amplitudeInit, amplitudeGetFrame, amplitudeFree, fmParallel, 0, data, core);
+    vsapi->createFilter(in, out, "Amp", amplitudeInit, amplitudeGetFrame, amplitudeFree, fmParallel, 0, data, core);
 }
 
 //////////////////////////////////////////
