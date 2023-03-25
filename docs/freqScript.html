@@ -11,10 +11,10 @@
 <BR>
 <BR>example test code for <font color="#f111ff">F1Quiver</font>.Top left freq spectrum with gamma scaling, filter used. Left lower half unscaled specrtrum. Right top half filtered output. Right lower half unfiltered input.
 <BR>core.vcm.F1Quiver(ret,custom = 1,morph = 0,strow=50,nrows=200, test = 1,filter = [50,100,80,1,100,100], gamma = 0.091)
-<BR><BR><img src="F1Q.png" width="720" height="480" alt="" border="0">
+<BR><BR><img src="./fqScript/F1Q.png" width="720" height="480" alt="" border="0">
 <BR><BR>Example for <font color="#f111ff">F2Quiver</font>. Left input, middle filtered output (test = 0), right freq spectrum and right extreme filters used(test = 1 mode).
 <BR>core.vcm.F2Quiver(ret,test = 0,fspec=[3,4,70,80,12,5,4,75,40,12, 5,4,75,-220,12,3,4,70,80,12],gamma=0.05)
-<BR><BR><img src="F2Q.png" width="1080" height="360" alt="" border="0">
+<BR><BR><img src="./fqScript/F2Q.png" width="1080" height="360" alt="" border="0">
 <BR><BR><BR>
 <BR>#blurred image .
 <BR>core.vcm.F2QBlur(ret,line = 1,x = 4, y = 4)
@@ -24,7 +24,7 @@ core.vcm.F2QSharp(ret,line = 1,x = 4, y = 4, fr = 10,wn = 0.1, scale = 0.45)
 ret=core.std.StackVertical(clips=[ret1,ret2])
 ret.set_output()
 </PRE>
-<BR><BR><img src="blur_Sharp.png" width="600" height="720" alt="" border="0">	
+<BR><BR><img src="./fqScript/blur_Sharp.png" width="600" height="720" alt="" border="0">	
 	<BR>
 <PRE>
 #  mildly blurred image sharpening
@@ -33,7 +33,7 @@ rets = core.vcm.F2QSharp(ret,line = 0,x = 3, y = 4, fr = 20,wn = 0.2,rgb =[1,1,]
 ret=core.std.StackHorizontal(clips=[ret,rets])
 ret.set_output()
 </PRE>
-<BR><BR><img src="bird_Sharp.png" width="800" height="360" alt="" border="0">	
+<BR><BR><img src="./fqScript/bird_Sharp.png" width="800" height="360" alt="" border="0">	
 	<BR>	
 	<BR><BR><BR>
 <BR>#Bokeh effect .
@@ -62,9 +62,9 @@ ret=core.std.StackHorizontal(clips=[b2k,blr])
 ret.set_output()
 image with similar process in avisynth+
 1. F2QBokeh:
-<img src="../manyPlus/f2qbokeh0.png" width="900" height="720" border="0">
+<img src="./fqScript/f2qbokeh0.png" width="900" height="720" border="0">
 2. Bokeh:
-<img src="../manyPlus/bokeh0.png" width="900" height="720" border="0">
+<img src="./fqScript/bokeh0.png" width="900" height="720" border="0">
 </pre>
 	</BODY>
 	</html>

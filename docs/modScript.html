@@ -13,15 +13,15 @@
 
 <BR># <font color="#f111ff">hist</font>
 <BR>core.vcm.Hist(ret)
-<BR><BR><img src="histogram.png" width="720" height="240" alt="" border="0">
+<BR><BR><img src="./modScript/histogram.png" width="720" height="240" alt="" border="0">
 <BR>
 <BR># <font color="#f111ff">Variance</font>
 <BR>core.vcm.variance(ret,lx=50,wd=50,ty=150,ht=100)
-<BR><BR><img src="variance.png" width="720" height="240" alt="" border="0">
+<BR><BR><img src="./modScript/variance.png" width="720" height="240" alt="" border="0">
 <BR>
 <BR># <font color="#f111ff">Median</font>
 <BR>core.vcm.Median(ret, maxgrid = 5, plane=[1,0,0])
-<BR><BR><img src="median.png" width="720" height="240" alt="" border="0">
+<BR><BR><img src="./modScript/median.png" width="720" height="240" alt="" border="0">
 <BR>
 <BR>Another example:-
 <PRE>
@@ -34,7 +34,7 @@ ret2 = core.vcm.Hist(ret2)
 ret=core.std.StackHorizontal(clips=[ret,ret1,ret2])
 </PRE>
 <BR>Display of result:-
-<BR><img src="amplitude.png" width="720" height="240" alt="" border="0">
+<BR><img src="./modScript/amplitude.png" width="720" height="240" alt="" border="0">
 
 <BR>Neural function usage:-
 <BR># input was blurred by GBlur to use as target output.
