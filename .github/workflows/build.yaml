@@ -44,7 +44,7 @@ jobs:
       - name: install meson and ninja
         run: pip install meson ninja
       - name: Install pkg-config lite
-        run: choco install pkgconfiglite
+        run: choco install pkgconfiglite --allow-empty-checksums
       - name: Meson setup
         run: meson setup builddir/ -Db_vscrt=mt -Dpkg_config_path=${{ github.workspace }}/vcpkg/installed/${{ matrix.platform }}-windows-static/lib/pkgconfig
       - name: Meson compile
