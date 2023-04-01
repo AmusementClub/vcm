@@ -179,7 +179,7 @@ static void VS_CC f2quiverInit(VSMap *in, VSMap *out, void **instanceData, VSNod
 		d->FreqFilter[i] = 1.0f;
 	}
 	
-	designFilter2D(d->Fspec, d->npoints, d->FreqFilter, d-> hbest, d->frqwidth );
+	designFilter2D(d->Fspec, d->npoints, d->FreqFilter, d-> hbest, d->wbest );
 
 		// normalize filter
 	float * filt = d->FreqFilter;
@@ -515,9 +515,6 @@ static const VSFrameRef *VS_CC f2quiverGetFrame(int n, int activationReason, voi
         int ht = vsapi->getFrameHeight(src, 0);
         int wd = vsapi->getFrameWidth(src, 0);
         VSFrameRef *dst = vsapi->copyFrame(src, core);
-		// float input
-		int iwidth = d->wbest;
-		int owidth = 2 + d->wbest / 2;		
 
 		//inBuf = (float*)d->fftwf_malloc (sizeof(float) * iwidth * d->hbest);
 		//outBuf = (fftwf_complex*)d->fftwf_malloc(sizeof(fftwf_complex)* owidth * d->hbest);

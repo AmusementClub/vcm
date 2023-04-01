@@ -34,20 +34,20 @@ void FanFilter2D( float * freqFilter, int* spec, int ht, int wd)
 	if(  spec[2] < 90  )	// values range from 0 to 89
 	{
 		
-		for(int w = 0; w < wd; w ++)
+		for(int w = 0; w < wd / 2 + 1; w ++)
 		{
-			float hfreq = (w - wd / 2) * tan (theta2) ; // sin(theta2) / cos(theta2);
-			float lfreq = (w - wd / 2) * tan (theta1); //sin(theta1) / cos(theta1);
+			float hfreq = w * tan (theta2) ; // sin(theta2) / cos(theta2);
+			float lfreq = w * tan (theta1); //sin(theta1) / cos(theta1);
 			float * flt = freqFilter;
 			float dsqrh = sqrt (hfreq * hfreq), dsqrl = sqrt(lfreq * lfreq);
 			
 			for( int h = 0; h < ht; h ++) 
 			{
-				float hsqr = sqrt( (float)(h - ht / 2) * (h - ht / 2));
+				float hsqr = sqrt( (float)((h <= ht / 2 ? h : ht - h) * (h <= ht / 2 ? h : ht - h)));
 
 				float mfactor = 1.0;
 
-				if( (h - ht/2) * (w - wd /2) > 0)	// axial values not disturbed as they represent dc values
+				if( (h <= ht / 2 ? h : ht - h) * w > 0)	// axial values not disturbed as they represent dc values
 				{				
 					if (type != locut)
 					{
@@ -73,7 +73,7 @@ void FanFilter2D( float * freqFilter, int* spec, int ht, int wd)
 				}
 				
 
-				flt += wd;
+				flt += wd / 2 + 1;
 			} 
 		}
 	}
@@ -81,20 +81,20 @@ void FanFilter2D( float * freqFilter, int* spec, int ht, int wd)
 	else if(  spec[2] > 90  )	// values range from 91 to 180
 	{
 		
-		for(int w = 0; w < wd; w ++)
+		for(int w = 0; w < wd / 2 + 1; w ++)
 		{
-			float lfreq = (w - wd / 2) * tan (pi - theta2) ; // sin(theta2) / cos(theta2);
-			float hfreq = (w - wd / 2) * tan (pi - theta1); //sin(theta1) / cos(theta1);
+			float lfreq = w * tan (pi - theta2) ; // sin(theta2) / cos(theta2);
+			float hfreq = w * tan (pi - theta1); //sin(theta1) / cos(theta1);
 			//float * flt = freqFilter;
 			float dsqrh = sqrt(hfreq * hfreq), dsqrl = sqrt(lfreq * lfreq);
 			float * flt = freqFilter + (ht - 1 ) * wd;
 
 			for( int h = ht - 1; h >= 0; h --) 
 			{
-				float hsqr = sqrt( (float)(h - ht / 2) * (h - ht / 2));
+				float hsqr = sqrt( (float) ((h <= ht / 2 ? h : ht - h) * (h <= ht / 2 ? h : ht - h)));
 				float mfactor = 1.0;
 
-				if ((h - ht / 2) * (w - wd / 2) < 0)	// axial values not disturbed as they represent dc values
+				if ((h <= ht / 2 ? h : ht - h) * w < 0)	// axial values not disturbed as they represent dc values
 				{
 					if (type != hicut)
 					{
@@ -118,7 +118,7 @@ void FanFilter2D( float * freqFilter, int* spec, int ht, int wd)
 				}					
 																											
 
-				flt -= wd;
+				flt -= wd / 2 + 1;
 			} 
 		}
 	}	
@@ -129,9 +129,9 @@ void FanFilter2D( float * freqFilter, int* spec, int ht, int wd)
 void pointNotchFilter2D( float * freqFilter, int* spec, int ht, int wd)
 {
 	// point centered notch filter
-	float xf = (spec[2] * wd) / (NYQUIST);
+	float xf = (spec[2] * wd) / float(NYQUIST);
 
-	float yf = (spec[3] * ht) / (NYQUIST );
+	float yf = (spec[3] * ht) / float(NYQUIST);
 
 	int degree = spec[4];
 	if (degree == 0)
@@ -141,10 +141,10 @@ void pointNotchFilter2D( float * freqFilter, int* spec, int ht, int wd)
 	//d0sq = (ht * ht + wd * wd)/ 4;
 	for(int h = 0; h < ht; h ++)
 	{
-		for(int w = 0; w < wd; w ++)
+		for(int w = 0; w < wd / 2 + 1; w ++)
 		{
-			float d1 = sqrt( (h - ht / 2 - yf) * (h - ht / 2 - yf) + (w - wd / 2 - xf) * (w - wd / 2 - xf) );
-			float d2 = sqrt( (h - ht / 2 + yf) * (h - ht / 2 + yf) + (w - wd / 2 + xf) * (w - wd / 2 + xf) );
+			float d1 = sqrt( ((h <= ht / 2 ? h : ht - h) - yf) * ((h <= ht / 2 ? h : ht - h) - yf) + (w - xf) * (w - xf) );
+			float d2 = sqrt( ((h <= ht / 2 ? h : ht - h) + yf) * ((h <= ht / 2 ? h : ht - h) + yf) + (w + xf) * (w + xf) );
 		
 			if(d1 * d2 > 0.0 )
 		
@@ -154,7 +154,7 @@ void pointNotchFilter2D( float * freqFilter, int* spec, int ht, int wd)
 				
 		}
 
-		freqFilter += wd;
+		freqFilter += wd / 2 + 1;
 	}
 }
 			
@@ -163,10 +163,10 @@ void pointNotchFilter2D( float * freqFilter, int* spec, int ht, int wd)
 void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 {
 	int type = fspec[1];	// 1 locut, 2 hicut, 3 band pass 4 band stop 5 Notch
-	float vf1 = (fspec[2] * wd ) /(NYQUIST);
-	float hf1 = (fspec[2] * ht ) / (NYQUIST);
-	float vf2 = (fspec[3] * wd ) /( NYQUIST);
-	float hf2 = (fspec[3] * ht ) /(NYQUIST);
+	float vf1 = (fspec[2] * wd) / float(NYQUIST);
+	float hf1 = (fspec[2] * ht) / float(NYQUIST);
+	float vf2 = (fspec[3] * wd) / float(NYQUIST);
+	float hf2 = (fspec[3] * ht) / float(NYQUIST);
 	int degree = fspec[4] == 0 ? 1 : fspec[4];
 	float dsqr = (vf1 * vf1); 
 	float dsqrband = (vf2 * vf2) ; 
@@ -179,11 +179,11 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr = ( h  - ht / 2 ) * ( h  - ht / 2 ) * ratiow2h;				
+				float d1sqr = (h <= ht / 2 ? h : ht - h) * (h <= ht / 2 ? h : ht - h) * ratiow2h;				
 
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1 ; w ++)
 				{
-					float d2sqr = ( w - wd / 2 ) * ( w - wd / 2 ); 
+					float d2sqr = w * w; 
 
 					if ( d1sqr + d2sqr > 0 )
 
@@ -192,7 +192,7 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 						filt[w] = 0;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 			break;
@@ -203,11 +203,11 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr = ( h  - ht / 2 ) *( h - ht / 2 ) *  ratiow2h;				
+				float d1sqr = (h <= ht / 2 ? h : ht - h) * (h <= ht / 2 ? h : ht - h) *  ratiow2h;
 
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1 ; w ++)
 				{
-					float d2sqr = ( w - wd / 2 ) * ( w - wd / 2 ); 
+					float d2sqr = w * w;
 
 					if ( dsqr > 0 )
 
@@ -216,7 +216,7 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 						filt[w] = 0;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 			break;
@@ -226,13 +226,13 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 		{
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr = ( h  - ht / 2 ) * ( h - ht / 2 ) *  ratiow2h;				
+				float d1sqr = (h <= ht / 2 ? h : ht - h) * (h <= ht / 2 ? h : ht - h) *  ratiow2h;				
 			//	float d1sqrband = ( h - ht/ 2 ) * ( h - ht / 2 );
 				float mfactor = 1.0;
 
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1; w ++)
 				{
-					float d2sqr = ( w - wd / 2 ) * ( w - wd / 2 ); 
+					float d2sqr = w * w; 
 			//		float d2sqrband = ( w - wd / 2 ) * ( w - wd / 2 );
 					if ( d1sqr + d2sqr > 0 )
 
@@ -247,7 +247,7 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 					filt[w] *= mfactor;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 			break;
@@ -257,13 +257,13 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 		{
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr = ( h  - ht / 2 ) *( h - ht / 2 ) * ratiow2h;				
+				float d1sqr = (h <= ht / 2 ? h : ht - h) * (h <= ht / 2 ? h : ht - h) * ratiow2h;				
 			//	float d1sqrband = ( h - ht/ 2 ) * ( h - ht / 2 );
 				float mfactor = 1.0f;
 
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1 ; w ++)
 				{
-					float d2sqr = ( w - wd / 2 ) * ( w - wd / 2 ); 
+					float d2sqr = w * w; 
 				//	float d2sqrband = ( w - wd / 2 ) * ( w - wd / 2 );
 					if ( d1sqr + d2sqr > 0 )
 
@@ -278,7 +278,7 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 					filt[w] *= 1.0f - mfactor;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 			break;
@@ -288,13 +288,13 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 		{
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr = ( h  - ht / 2 ) *( h - ht / 2 ) * ratiow2h;				
+				float d1sqr = (h <= ht / 2 ? h : ht - h) * (h <= ht / 2 ? h : ht - h) * ratiow2h;				
 			//	float d1sqrband = ( h - ht/ 2 ) * ( h - ht / 2 );
 				float mfactor = 1.0;
 
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1; w ++)
 				{
-					float d2sqr = ( w - wd / 2 ) * ( w - wd / 2 ); 
+					float d2sqr = w * w; 
 				//	float d2sqrband = ( w - wd / 2 ) * ( w - wd / 2 );
 					if ( d1sqr + d2sqr > 0 )
 					{
@@ -309,7 +309,7 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 					filt[w] *= 1.0f - mfactor;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 		}
@@ -325,9 +325,9 @@ void ButterworthCircular2D(float *filt, int * fspec, int ht,int wd)
 void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 {
 	int type = fspec[1];	// 1 locut, 2 hicut, 3 band pass 4 band stop 5 Notch
-	int vf1 = (fspec[2] * ht ) /(NYQUIST);
+	float vf1 = (fspec[2] * ht ) / float(NYQUIST);
 //	int hf1 = (fspec[2] * ht ) / NYQUIST;
-	int vf2 = (fspec[3] * ht ) /( NYQUIST);
+	float vf2 = (fspec[3] * ht ) / float(NYQUIST);
 //	int hf2 = (fspec[3] * ht ) / NYQUIST;
 	int degree = fspec[4] == 0 ? 1 : 2 * fspec[4];
 	float dsqr = (vf1 );
@@ -339,7 +339,7 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 		{
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr = abs( h - ht / 2 ) ;				
+				float d1sqr = (h <= ht / 2 ? h : ht - h);				
 				float mfactor = 1.0f;
 				
 					if ( d1sqr > 0 )
@@ -348,12 +348,12 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 					else
 						mfactor = 0;
 
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1 ; w ++)
 				{
 					filt[w] *= mfactor;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 			break;
@@ -364,7 +364,7 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr =  abs( h - ht / 2 ) ;			
+				float d1sqr = (h <= ht / 2 ? h : ht - h);			
 				float mfactor = 1.0f;
 				
 				if ( d1sqr > 0 )
@@ -375,12 +375,12 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 
 					mfactor = 1.0f;
 					
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1; w ++)
 				{
 					filt[w] *= mfactor;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 			break;
@@ -390,7 +390,7 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 		{
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr =  abs( h - ht / 2 ) ;			
+				float d1sqr = (h <= ht / 2 ? h : ht - h);			
 				//float d1sqrband = ( h - ht/ 2 ) * ( h - ht / 2 );
 				float mfactor = 1.0f;
 
@@ -404,13 +404,13 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 					
 					mfactor *= float(1.0 / (1.0 + pow(d1sqr / (dsqrband), degree)));
 					
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1; w ++)
 				{
 
 					filt[w] *= mfactor;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 			break;
@@ -420,7 +420,7 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 		{
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr =  abs( h - ht / 2 ) ;		
+				float d1sqr =  (h <= ht / 2 ? h : ht - h);		
 			//	float d1sqrband = ( h - ht/ 2 ) * ( h - ht / 2 );
 				float mfactor = 1.0f;
 
@@ -437,13 +437,13 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 					else
 						mfactor = 0.0;
 
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1; w ++)
 				{
 
 					filt[w] *= 1.0f - mfactor;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 			break;
@@ -453,7 +453,7 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 		{
 			for (int h = 0; h < ht ; h ++)
 			{
-				float d1sqr =  abs( h - ht / 2 ) ;														
+				float d1sqr = (h <= ht / 2 ? h : ht - h);														
 			//	float d1sqrband = ( h - ht/ 2 ) * ( h - ht / 2 );
 				float mfactor = 1.0f;				
 					
@@ -470,13 +470,13 @@ void ButterworthHorizontal2D(float *filt, int * fspec, int ht,int wd)
 					else
 						mfactor = 0.0;
 
-				for ( int w = 0; w < wd ; w ++)
+				for ( int w = 0; w < wd / 2 + 1; w ++)
 				{
 
 					filt[w] *= 1.0f - mfactor;
 				}
 
-				filt += wd;
+				filt += wd / 2 + 1;
 			}
 
 		}
@@ -493,9 +493,9 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 {
 	int type = fspec[1];	// 1 locut, 2 hicut, 3 band pass 4 band stop 5 Notch
 	//int vf1 = (fspec[2] * ht ) /(2 * NYQUIST);
-	int hf1 = (fspec[2] * wd ) / NYQUIST; 
+	float hf1 = (fspec[2] * wd ) / float(NYQUIST); 
 	//int vf2 = (fspec[3] * ht ) /(2 * NYQUIST);
-	int hf2 = (fspec[3] * wd ) / NYQUIST; 
+	float hf2 = (fspec[3] * wd ) / float(NYQUIST); 
 	int degree = fspec[4] == 0 ? 1 : 2 * fspec[4];
 	float dsqr = ( hf1 );
 	float dsqrband =( hf2  );
@@ -505,11 +505,11 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 		case 1 :	// locut or high freq pass
 		{			
 
-			for (int w = 0; w < wd ; w ++)
+			for (int w = 0; w < wd / 2 + 1; w ++)
 			{
 				float * flt = filt + w;
 
-				float d2sqr = abs( w - wd / 2 ) ;
+				float d2sqr = w;
 
 				float mfactor;
 
@@ -524,7 +524,7 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 				{
 					flt[0] *= mfactor;
 
-					flt += wd;
+					flt += wd / 2 + 1;
 				}
 			}
 
@@ -534,11 +534,11 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 		case 2 : // highcut or low freq pass 1.0 - locut filter
 		{
 
-			for (int w = 0; w < wd ; w ++)
+			for (int w = 0; w < wd / 2 + 1; w ++)
 			{
 				float * flt = filt + w;
 
-				float d2sqr =  abs( w - wd / 2 ) ;			
+				float d2sqr = w;			
 
 				float mfactor;
 
@@ -552,7 +552,7 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 				{
 					flt[0] *= mfactor;
 
-					flt += wd;
+					flt += wd / 2 + 1;
 				}
 			}
 
@@ -561,11 +561,11 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 
 		case 3 :	// band pass (locut * hicut)
 		{
-			for (int w = 0; w < wd ; w ++)
+			for (int w = 0; w < wd / 2 + 1; w ++)
 			{
 				float * flt = filt + w;
 
-				float d2sqr = abs( w - wd / 2 ) ;				
+				float d2sqr = w;				
 			//	float d2sqrband = abs( w - wd / 2 );
 
 				float mfactor = 1.0f;				
@@ -588,7 +588,7 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 
 					flt[0] *= mfactor;				
 
-					flt += wd;
+					flt += wd / 2 + 1;
 				}
 			}
 
@@ -597,11 +597,11 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 
 		case 4 :	// band reject (locut * hicut)
 		{
-			for (int w = 0; w < wd ; w ++)
+			for (int w = 0; w < wd / 2 + 1; w ++)
 			{
 				float * flt = filt + w;
 
-				float d2sqr = abs( w - wd / 2 ) ;		
+				float d2sqr = w;		
 			//	float d2sqrband = abs( w - wd / 2 );
 
 				float mfactor = 1.0f;										
@@ -623,7 +623,7 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 
 					flt[0] *= 1 -  mfactor;				
 
-					flt += wd;
+					flt += wd / 2 + 1;
 				}
 			}
 
@@ -635,11 +635,11 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 			
 			float mfactor = 1.0;
 
-			for (int w = 0; w < wd ; w ++)
+			for (int w = 0; w < wd / 2 + 1; w ++)
 			{
 				float * flt = filt + w;
 
-				float d2sqr = abs( w - wd / 2 ) ;			
+				float d2sqr = w;			
 
 				float mfactor = 1.0f;				
 					
@@ -661,7 +661,7 @@ void ButterworthVertical2D(float *filt, int * fspec, int ht,int wd)
 
 					flt[0] *= 1.0f - mfactor;				
 
-					flt += wd;
+					flt += wd / 2 + 1;
 				}
 			}
 
