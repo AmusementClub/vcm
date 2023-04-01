@@ -830,8 +830,8 @@ void getHMRealOutput2D(float* in, finc* dp, int pitch, int ht,
 
 			dp[w] = fclamp(val, min, max);
 		}
-		in += pitch;
-		dp += wbest;
+		dp += pitch;
+		in += wbest;
 	}
 }
 //----------------------------------------------------------------------------------------
