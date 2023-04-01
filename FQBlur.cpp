@@ -376,7 +376,8 @@ static void VS_CC f2qblurFree(void *instanceData, VSCore *core, const VSAPI *vsa
 		d->fftwf_destroy_plan(d->pinvUV);
 	d->fftwf_destroy_plan(d->pinv);
 
-	FreeLibrary(d->hinstLib);
+	if (d->hinstLib != NULL)
+		FreeLibrary(d->hinstLib);
     vsapi->freeNode(d->node);
 
     free(d);

@@ -144,7 +144,8 @@ static void VS_CC f2qlimitInit(VSMap *in, VSMap *out, void **instanceData, VSNod
 	{
 		vsapi->setError(out, "F2QLimit: unexpectedly buffers not allocated error");
 		vsapi->freeNode(d->node);
-		FreeLibrary(d->hinstLib);
+		if (d->hinstLib != NULL)
+			FreeLibrary(d->hinstLib);
 		free(d);
 		return;
 	}
@@ -159,7 +160,8 @@ static void VS_CC f2qlimitInit(VSMap *in, VSMap *out, void **instanceData, VSNod
 		vsapi->freeNode(d->node);
 		d->fftwf_free(d->inBuf);
 		d->fftwf_free(d->outBuf);
-		FreeLibrary(d->hinstLib);
+		if (d->hinstLib != NULL)
+			FreeLibrary(d->hinstLib);
 		free(d);
 		return;
 	}
@@ -320,7 +322,8 @@ static void VS_CC f2qlimitFree(void *instanceData, VSCore *core, const VSAPI *vs
 	d->fftwf_free(d->inBuf);
 	d->fftwf_free(d->outBuf);
 
-	FreeLibrary(d->hinstLib);
+	if (d->hinstLib != NULL)
+		FreeLibrary(d->hinstLib);
 
     free(d);
 }

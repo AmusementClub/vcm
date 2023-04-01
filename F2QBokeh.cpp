@@ -509,7 +509,8 @@ static void VS_CC f2qbokehFree(void* instanceData, VSCore* core, const VSAPI* vs
 	d->fftwf_free(d->inBuf);
 	d->fftwf_free(d->outBuf);
 
-	FreeLibrary(d->hinstLib);
+	if (d->hinstLib != NULL)
+		FreeLibrary(d->hinstLib);
 	vsapi->freeNode(d->node);
 	vsapi->freeNode(d->nodeB);
 

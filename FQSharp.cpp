@@ -300,8 +300,9 @@ static void VS_CC f2qsharpFree(void *instanceData, VSCore *core, const VSAPI *vs
 	// release buffers
 	d->fftwf_free(d->inBuf);
 	d->fftwf_free(d->outBuf);
-	d->fftwf_free(d->FreqFilter);	
-	FreeLibrary(d->hinstLib);
+	d->fftwf_free(d->FreqFilter);
+	if (d->hinstLib != NULL)
+		FreeLibrary(d->hinstLib);
     free(d);
 }
 //......................................................................................
