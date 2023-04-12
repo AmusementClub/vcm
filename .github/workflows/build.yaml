@@ -17,7 +17,7 @@ jobs:
           - arch: amd64
             platform: x64
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: setup MS dev commands
         uses: ilammy/msvc-dev-cmd@v1
         with:
@@ -25,12 +25,12 @@ jobs:
 
       - name: Cache fftw3
         id: cache-fftw3
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/vcpkg/installed/
           key:  ${{ runner.os }}-${{ matrix.arch }}-fftw3-v3
       - name: Run vcpkg
-        uses: lukka/run-vcpkg@v4
+        uses: lukka/run-vcpkg@v7
         if: steps.cache-fftw3.outputs.cache-hit != 'true'
         with:
           vcpkgArguments: 'fftw3[avx2]:${{ matrix.platform }}-windows-static'
@@ -38,13 +38,17 @@ jobs:
           vcpkgGitCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092 # 2021.05.12 release
 
       - name: Setup Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - name: install meson and ninja
         run: pip install meson ninja
       - name: Install pkg-config lite
-        run: choco install pkgconfiglite --allow-empty-checksums
+        shell: bash
+        run: |
+          curl -o pcl.zip -L https://github.com/AmusementClub/blobs/releases/download/blob-pkgconfiglite/pkg-config-lite-0.28-1_bin-win32.zip
+          7z x pcl.zip
+          echo "$(cygpath --absolute --long-name --windows $(pwd)/pkg-config-lite-0.28-1/bin)" >> $GITHUB_PATH
       - name: Meson setup
         run: meson setup builddir/ -Db_vscrt=mt -Dpkg_config_path=${{ github.workspace }}/vcpkg/installed/${{ matrix.platform }}-windows-static/lib/pkgconfig
       - name: Meson compile
@@ -56,7 +60,7 @@ jobs:
           cp -a docs release
           cp builddir/*.dll release
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-${{matrix.arch}}
           path: |
