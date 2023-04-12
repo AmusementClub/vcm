@@ -1,9 +1,11 @@
 # vcm
-This is a mirror of http://www.avisynth.nl/users/vcmohan/vcm/vcm.html
+This is a local fork of http://www.avisynth.nl/users/vcmohan/vcm/vcm.html
 
-Mainly to have a "stable" release link for [vsrepo](https://github.com/vapoursynth/vsrepo).
+Major changes:
+- added a `meson` based build support for both Unix and Windows
+- some local bugfixes
 
-Some modifications are made to fix build on Unix.
+Requires `fftw3` to build.
 
 ## Plugin Author
 V. C. Mohan - http://www.avisynth.nl/users/vcmohan/
