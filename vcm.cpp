@@ -116,7 +116,7 @@ VS_EXTERNAL_API(void) VapourSynthPluginInit(VSConfigPlugin configFunc, VSRegiste
 {
     configFunc("in.vcmohan.cm", "vcm", "VapourSynth Plugin by vcmohan ", VAPOURSYNTH_API_VERSION, 1, plugin);	
 
-	registerFunc("Amp", "clip:clip;useclip:int:opt;sclip:clip:opt;connect4:int:opt;sh:int[];sm:int[];", amplitudeCreate, 0, plugin);
+	registerFunc("Amp", "clip:clip;useclip:int:opt;sclip:clip:opt;connect4:int:opt;sh:int[]:opt;sm:int[]:opt;", amplitudeCreate, 0, plugin);
 	registerFunc("Fan", "clip:clip;span:int:opt;edge:int:opt;plus:int:opt;minus:int:opt;uv:int:opt;", fanCreate, 0, plugin); 
 	registerFunc("Hist", "clip:clip;clipm:clip:opt;type:int:opt;table:int[]:opt;mf:int:opt;window:int:opt;limit:int:opt", histogramadjustCreate, 0, plugin);
 	registerFunc("Median", "clip:clip;maxgrid:int:opt;plane:int[]:opt;", adaptivemedianCreate, 0, plugin);
@@ -131,9 +131,9 @@ VS_EXTERNAL_API(void) VapourSynthPluginInit(VSConfigPlugin configFunc, VSRegiste
 
 	registerFunc("F1Quiver", "clip:clip;filter:int[];morph:int:opt;custom:int:opt;test:int:opt;strow:int:opt;nrows:int:opt;gamma:float:opt;", f1quiverCreate, 0, plugin);
 	registerFunc("F1QClean", "clip:clip;span:int:opt;fromf:int:opt;upto:int:opt;", f1qcleanCreate, 0, plugin);
-	registerFunc("F1QLimit", "clip:clip;span:int:opt;limit:int:opt;freqs:int[];", f1qlimitCreate, 0, plugin);
-	registerFunc("F2Quiver", "clip:clip;frad:int:opt;ham:int:opt;test:int:opt;morph:int:opt;gamma:float:opt;fspec:int[];", f2quiverCreate, 0, plugin);
-	registerFunc("F2QLimit", "clip:clip;grid:int:opt;inner:int:opt;warn:int:opt;fspec:int[];", f2qlimitCreate, 0, plugin);
+	registerFunc("F1QLimit", "clip:clip;span:int:opt;limit:int:opt;freqs:int[]:opt;", f1qlimitCreate, 0, plugin);
+	registerFunc("F2Quiver", "clip:clip;frad:int:opt;ham:int:opt;test:int:opt;morph:int:opt;gamma:float:opt;fspec:int[]:opt;", f2quiverCreate, 0, plugin);
+	registerFunc("F2QLimit", "clip:clip;grid:int:opt;inner:int:opt;warn:int:opt;fspec:int[]:opt;", f2qlimitCreate, 0, plugin);
 	registerFunc("F2QBlur", "clip:clip;line:int:opt;x:int:opt;y:int:opt;", f2qblurCreate, 0, plugin);
 	registerFunc("F2QSharp", "clip:clip;line:int:opt;wn:float:opt;x:int:opt;y:int:opt;frad:int:opt;ham:int:opt;;scale:float:opt;rgb:int[]:opt;yuv:int[]:opt", f2qsharpCreate, 0, plugin);
 	registerFunc("F2QCorr", "clip:clip;bclip:clip;cx:int:opt;cy:int:opt;txt:int:opt;filename:data:opt;sf:int:opt;ef:int:opt;every:int:opt;", f2qcorrCreate, 0, plugin);
@@ -143,7 +143,7 @@ VS_EXTERNAL_API(void) VapourSynthPluginInit(VSConfigPlugin configFunc, VSRegiste
 							"axx:int:opt;axy:int:opt;intq:int:opt;", rotateCreate, 0, plugin);
 	registerFunc("DeBarrel", "clip:clip;abc:float[];method:int:opt;pin:int:opt;q:int:opt;test:int:opt;dots:data:opt;dim:float:opt;", debarrelCreate, 0, plugin);
 	
-	registerFunc("Reform", "clip:clip;bkg:clip;intq:int:opt;norm:int:opt;rect:float[]:opt;quad:float[];q2r:int:opt;", reformCreate, 0, plugin);
+	registerFunc("Reform", "clip:clip;bkg:clip;intq:int:opt;norm:int:opt;rect:float[]:opt;quad:float[]:opt;q2r:int:opt;", reformCreate, 0, plugin);
 	
 	registerFunc("Fisheye", "clip:clip;method:int:opt;xo:int:opt;yo:int:opt;frad:int:opt;sqr:int:opt;"
 		"rix:float:opt;fov:float:opt;test:int:opt;dim:float:opt;q:int:opt;dots:int:opt;", fisheyeCreate, 0, plugin);
