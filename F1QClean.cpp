@@ -498,7 +498,7 @@ static void VS_CC f1qlimitCreate(const VSMap* in, VSMap* out, void* userData, VS
 	}
 	
 	d.nfrequencies = vsapi->propNumElements(in, "freqs");
-	if (d.nfrequencies == 0 || d.nfrequencies > 10)
+	if (d.nfrequencies == -1 || d.nfrequencies > 10)
 	{
 		vsapi->setError(out, "F1QLimit: for option 1, at least one and not more than 10 freqs must be specified in the array");
 		vsapi->freeNode(d.node);

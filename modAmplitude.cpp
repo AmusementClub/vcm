@@ -492,7 +492,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 		d.connect4 = temp == 0 ? false : true;
 	}
 	temp = vsapi->propNumElements(in,"sh");
-	if ( temp == 0 || temp > 3)
+	if (temp == -1 || temp > 3)
 	{
 			vsapi->setError(out, "Amp: sh array must specify not more than 3 and at least first of 3 values corresponding to 3 planes");
 			vsapi->freeNode(d.node[0]);			
@@ -524,7 +524,7 @@ static void VS_CC amplitudeCreate(const VSMap *in, VSMap *out, void *userData, V
 	}
 
 	temp = vsapi->propNumElements(in,"sm");
-	if (temp == 0 || temp > 3)
+	if (temp == -1 || temp > 3)
 	{
 		vsapi->setError(out, "Amp: sm array must specify not more than 3 and at least first of 3 values corresponding to 3 planes");
 		vsapi->freeNode(d.node[0]);
